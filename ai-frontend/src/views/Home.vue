@@ -34,6 +34,22 @@
             </el-input>
           </el-card>
 
+          <!-- ─── 角色工作台入口 ─── -->
+          <div class="section-label">👷 一线操作工作台</div>
+          <div class="workspace-grid">
+            <div v-for="ws in workspaces" :key="ws.path"
+              class="ws-card" @click="$router.push(ws.path)">
+              <div class="ws-icon">{{ ws.icon }}</div>
+              <div class="ws-info">
+                <div class="ws-name">{{ ws.name }}</div>
+                <div class="ws-desc">{{ ws.desc }}</div>
+              </div>
+              <el-tag size="small" :type="ws.tagType" class="ws-badge">{{ ws.badge }}</el-tag>
+            </div>
+          </div>
+
+          <!-- ─── 分析管理入口 ─── -->
+          <div class="section-label">🧠 管理与分析</div>
           <div class="quick-actions">
             <el-card v-for="item in quickItems" :key="item.title"
               :body-style="{ padding: '16px' }"
@@ -58,9 +74,19 @@ import { Search } from '@element-plus/icons-vue'
 const router = useRouter()
 const searchQuery = ref('')
 
+const workspaces = [
+  { icon: '📋', name: '订单处理', desc: '审核订单 · 打印面单 · 推送仓库', path: '/workspace/order', badge: '3 待审', tagType: 'danger' },
+  { icon: '🔍', name: '拣货', desc: '扫码拣货 · 校验SKU · 集货', path: '/workspace/picking', badge: '7 待拣', tagType: 'warning' },
+  { icon: '📦', name: '打包', desc: '复核商品 · 装箱 · 贴单', path: '/workspace/packing', badge: '5 待包', tagType: 'warning' },
+  { icon: '🚚', name: '发货', desc: '交接快递 · 称重 · 发货确认', path: '/workspace/shipping', badge: '12 待发', tagType: 'primary' },
+  { icon: '📥', name: '收货', desc: '采购入库 · 退货入库 · 上架', path: '/workspace/receiving', badge: '2 待收', tagType: 'info' },
+  { icon: '🔬', name: '质检', desc: '来料检验 · 出货抽检', path: '/workspace/qc', badge: '4 待检', tagType: 'info' },
+  { icon: '📋', name: '盘点', desc: '盘点任务 · 差异调整', path: '/workspace/counting', badge: '1 进行中', tagType: 'info' },
+]
+
 const quickItems = [
-  { icon: '📦', title: '查订单', desc: '查询订单状态和详情', action: '/chat?q=查订单' },
-  { icon: '📊', title: '销售数据', desc: '查看今日销售情况', action: '/chat?q=今天销售数据' },
+  { icon: '📊', title: '智能看板', desc: '关键指标可视化', action: '/dashboard' },
+  { icon: '🤖', title: 'AI对话', desc: '自然语言查数据做分析', action: '/chat' },
   { icon: '⚠️', title: '库存预警', desc: '库存不足的商品列表', action: '/chat?q=库存预警' },
   { icon: '📈', title: '数据分析', desc: 'AI智能分析解读', action: '/chat?q=销售分析' },
 ]
@@ -79,6 +105,40 @@ function quickAction(item: any) {
 </script>
 
 <style scoped>
+/* ─── 角色工作台网格 ─── */
+.section-label {
+  font-size: 16px; font-weight: 600; color: #333;
+  margin: 32px 0 16px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;
+}
+.workspace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  max-width: 800px;
+  margin: 0 auto 8px;
+}
+.ws-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid #e8ecf1;
+  border-radius: 10px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ws-card:hover {
+  border-color: #409eff;
+  box-shadow: 0 2px 8px rgba(64,158,255,0.12);
+  transform: translateY(-1px);
+}
+.ws-icon { font-size: 28px; flex-shrink: 0; }
+.ws-info { flex: 1; min-width: 0; text-align: left; }
+.ws-name { font-weight: 600; font-size: 14px; color: #333; }
+.ws-desc { font-size: 12px; color: #999; margin-top: 2px; }
+.ws-badge { flex-shrink: 0; }
+
 .header {
   display: flex;
   justify-content: space-between;
