@@ -4,10 +4,10 @@
       <el-header class="header">
         <div class="logo">启航AI ERP</div>
         <div class="header-actions">
-          <el-button @click="$router.push('/chat')" type="primary" size="small">
+          <el-button v-if="hasPerm('chat:view')" @click="$router.push('/chat')" type="primary" size="small">
             🤖 AI对话
           </el-button>
-          <el-button @click="$router.push('/dashboard')" size="small">
+          <el-button v-if="hasPerm('dashboard:view')" @click="$router.push('/dashboard')" size="small">
             📊 智能看板
           </el-button>
           <el-dropdown trigger="click" v-if="authStore.isLoggedIn">
@@ -23,6 +23,9 @@
                     {{ authStore.roles.map(r => r.roleName).join(' / ') }}
                   </div>
                 </el-dropdown-item>
+                <el-dropdown-item v-if="hasPerm('system:manage')" divided @click="goSystem">
+                  ⚙️ 系统管理
+                </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -33,7 +36,7 @@
       <el-main class="main">
         <div class="welcome">
           <h1>欢迎使用启航AI ERP</h1>
-          <p class="subtitle">以 AI 之力，重塑企业未来 — 智能、高效、可感知的新一代企业资源计划系统</p>
+          <p class="subtitle">以 AI 之力，重塑企业未来</p>
 
           <el-card class="search-card">
             <el-input
@@ -51,22 +54,36 @@
             </el-input>
           </el-card>
 
-          <!-- ─── 角色工作台入口 ─── -->
-          <div class="section-label">👷 一线操作工作台</div>
-          <div class="workspace-grid">
-            <div v-for="ws in workspaces" :key="ws.path"
-              class="ws-card" @click="$router.push(ws.path)">
-              <div class="ws-icon">{{ ws.icon }}</div>
+          <!-- ─── 动态工作台入口 (按权限渲染) ─── -->
+          <div class="section-label" v-if="workspaceMenus.length > 0">👷 我的工作台</div>
+          <div class="workspace-grid" v-if="workspaceMenus.length > 0">
+            <div v-for="m in workspaceMenus" :key="m.menuId"
+              class="ws-card" @click="goMenu(m)">
+              <div class="ws-icon">{{ m.icon || '📄' }}</div>
               <div class="ws-info">
-                <div class="ws-name">{{ ws.name }}</div>
-                <div class="ws-desc">{{ ws.desc }}</div>
+                <div class="ws-name">{{ m.menuName }}</div>
+                <div class="ws-desc">{{ m.perms }}</div>
               </div>
-              <el-tag size="small" :type="ws.tagType" class="ws-badge">{{ ws.badge }}</el-tag>
+              <el-icon class="ws-arrow"><ArrowRight /></el-icon>
             </div>
           </div>
 
-          <!-- ─── 分析管理入口 ─── -->
-          <div class="section-label">🧠 管理与分析</div>
+          <!-- ─── 系统管理入口 ─── -->
+          <div class="section-label" v-if="hasPerm('system:manage')">⚙️ 系统管理</div>
+          <div class="workspace-grid" v-if="hasPerm('system:manage')">
+            <div v-for="m in sysMenus" :key="m.menuId"
+              class="ws-card" @click="goMenu(m)">
+              <div class="ws-icon">{{ m.icon || '⚙️' }}</div>
+              <div class="ws-info">
+                <div class="ws-name">{{ m.menuName }}</div>
+                <div class="ws-desc">{{ m.perms }}</div>
+              </div>
+              <el-icon class="ws-arrow"><ArrowRight /></el-icon>
+            </div>
+          </div>
+
+          <!-- ─── 快捷操作 ─── -->
+          <div class="section-label" style="margin-top:24px">🔍 快捷操作</div>
           <div class="quick-actions">
             <el-card v-for="item in quickItems" :key="item.title"
               :body-style="{ padding: '16px' }"
@@ -84,38 +101,65 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Search, ArrowDown } from '@element-plus/icons-vue'
+import { Search, ArrowDown, ArrowRight } from '@element-plus/icons-vue'
 import { useAuthStore } from '../stores/auth'
+import request from '../utils/request'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const searchQuery = ref('')
+const menus = ref<any[]>([])
 
-const workspaces = [
-  { icon: '📋', name: '订单处理', desc: '审核订单 · 打印面单 · 推送仓库', path: '/workspace/order', badge: '3 待审', tagType: 'danger' },
-  { icon: '🔍', name: '拣货', desc: '扫码拣货 · 校验SKU · 集货', path: '/workspace/picking', badge: '7 待拣', tagType: 'warning' },
-  { icon: '📦', name: '打包', desc: '复核商品 · 装箱 · 贴单', path: '/workspace/packing', badge: '5 待包', tagType: 'warning' },
-  { icon: '🚚', name: '发货', desc: '交接快递 · 称重 · 发货确认', path: '/workspace/shipping', badge: '12 待发', tagType: 'primary' },
-  { icon: '📥', name: '收货', desc: '采购入库 · 退货入库 · 上架', path: '/workspace/receiving', badge: '2 待收', tagType: 'info' },
-  { icon: '🔬', name: '质检', desc: '来料检验 · 出货抽检', path: '/workspace/qc', badge: '4 待检', tagType: 'info' },
-  { icon: '📋', name: '盘点', desc: '盘点任务 · 差异调整', path: '/workspace/counting', badge: '1 进行中', tagType: 'info' },
-]
+// 用户拥有的所有菜单权限
+const userPerms = computed(() => authStore.permissions || [])
 
-const quickItems = [
-  { icon: '📊', title: '智能看板', desc: '关键指标可视化', action: '/dashboard' },
-  { icon: '🤖', title: 'AI对话', desc: '自然语言查数据做分析', action: '/chat' },
-  { icon: '⚠️', title: '库存预警', desc: '库存不足的商品列表', action: '/chat?q=库存预警' },
-  { icon: '📈', title: '数据分析', desc: 'AI智能分析解读', action: '/chat?q=销售分析' },
-]
+// 有权限的工作台菜单 (类型为 C，有 path)
+const workspaceMenus = computed(() =>
+  menus.value.filter(m =>
+    m.menuType === 'C' && m.path &&
+    m.menuId < 13  // 非系统管理菜单
+  )
+)
 
-async function handleLogout() {
-  await authStore.logout()
-  ElMessage.success('已退出登录')
-  router.push('/login')
+// 系统管理子菜单
+const sysMenus = computed(() =>
+  menus.value.filter(m =>
+    m.menuType === 'C' && m.path &&
+    m.menuId >= 13
+  )
+)
+
+function hasPerm(perm: string) {
+  return userPerms.value.includes(perm) || userPerms.value.includes('*:*:*')
 }
+
+function goMenu(m: any) {
+  if (m.path) router.push(m.path)
+}
+
+function goSystem() {
+  router.push('/system/roles')
+}
+
+const quickItems = computed(() => {
+  const items: any[] = []
+  if (hasPerm('workspace:order:view')) {
+    items.push({ icon: '📦', title: '查订单', desc: '查询订单状态和详情', action: '/workspace/order' })
+  }
+  if (hasPerm('workspace:picking:view')) {
+    items.push({ icon: '🔍', title: '拣货任务', desc: '查看今日拣货任务', action: '/workspace/picking' })
+  }
+  if (hasPerm('dashboard:view')) {
+    items.push({ icon: '📊', title: '销售数据', desc: '查看今日销售情况', action: '/dashboard' })
+  }
+  if (hasPerm('chat:view')) {
+    items.push({ icon: '📈', title: '数据分析', desc: 'AI智能分析解读', action: '/chat?q=销售分析' })
+  }
+  return items
+})
 
 function goChat() {
   if (searchQuery.value.trim()) {
@@ -128,17 +172,42 @@ function goChat() {
 function quickAction(item: any) {
   router.push(item.action)
 }
+
+async function handleLogout() {
+  await authStore.logout()
+  ElMessage.success('已退出登录')
+  router.push('/login')
+}
+
+// 加载菜单
+onMounted(async () => {
+  if (authStore.isLoggedIn) {
+    try {
+      const res: any = await request.get('/sys-api/system/menu/tree')
+      menus.value = res.data || []
+      // 扁平化
+      const flat: any[] = []
+      function flatten(list: any[]) {
+        for (const m of list) {
+          flat.push(m)
+          if (m.children) flatten(m.children)
+        }
+      }
+      flatten(menus.value)
+      menus.value = flat
+    } catch {}
+  }
+})
 </script>
 
 <style scoped>
-/* ─── 角色工作台网格 ─── */
 .section-label {
   font-size: 16px; font-weight: 600; color: #333;
   margin: 32px 0 16px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;
 }
 .workspace-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 12px;
   max-width: 800px;
   margin: 0 auto 8px;
@@ -163,8 +232,7 @@ function quickAction(item: any) {
 .ws-info { flex: 1; min-width: 0; text-align: left; }
 .ws-name { font-weight: 600; font-size: 14px; color: #333; }
 .ws-desc { font-size: 12px; color: #999; margin-top: 2px; }
-.ws-badge { flex-shrink: 0; }
-
+.ws-arrow { color: #ccc; font-size: 16px; }
 .user-btn { display: flex; align-items: center; gap: 6px; }
 .user-avatar {
   display: inline-flex; align-items: center; justify-content: center;
@@ -205,7 +273,7 @@ function quickAction(item: any) {
 }
 .quick-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
   max-width: 800px;
   margin: 0 auto;

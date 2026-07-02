@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenService {
 
-    @Value("${token.secret:qihangaiersecretkey2026abcdefghijklmnopqrstuvwxyz1234567890}")
+    @Value("${token.secret:qihang-ai-erp-jwt-secret-2026！！}")
     private String secret;
 
     @Value("${token.expireTime:480}")
@@ -31,13 +31,24 @@ public class TokenService {
 
     public LoginUser getLoginUser(HttpServletRequest request) {
         String token = getToken(request);
+        System.out.println("[TokenService] token: " + (token != null ? token.substring(0, Math.min(30, token.length())) + "..." : "null"));
         if (token != null && !token.isEmpty()) {
             try {
                 Claims claims = parseToken(token);
                 String uuid = claims.get(Constants.LOGIN_USER_KEY, String.class);
-                String json = redisTemplate.opsForValue().get(Constants.LOGIN_TOKEN_KEY + uuid);
-                if (json != null) return LoginUser.fromJson(json);
-            } catch (Exception ignored) {}
+                System.out.println("[TokenService] uuid: " + uuid);
+                String redisKey = Constants.LOGIN_TOKEN_KEY + uuid;
+                String json = redisTemplate.opsForValue().get(redisKey);
+                System.out.println("[TokenService] redisKey: " + redisKey + ", found: " + (json != null));
+                if (json != null) {
+                    LoginUser user = LoginUser.fromJson(json);
+                    System.out.println("[TokenService] user: " + (user != null ? user.getUsername() : "deserialize null"));
+                    return user;
+                }
+            } catch (Exception e) {
+                System.out.println("[TokenService] ERROR: " + e.getClass().getName() + ": " + e.getMessage());
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -60,7 +71,10 @@ public class TokenService {
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, tokenValue);
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        return Jwts.builder().claims(claims).signWith(key).compact();
+        return Jwts.builder()
+            .claims(claims)
+            .signWith(key)
+            .compact();
     }
 
     public void refreshToken(LoginUser loginUser) {
@@ -74,7 +88,11 @@ public class TokenService {
 
     private Claims parseToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
     }
 
     private String getToken(HttpServletRequest request) {

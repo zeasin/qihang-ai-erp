@@ -22,7 +22,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        String path = request.getRequestURI();
+        System.out.println("[JWT-Filter] URI: " + path + ", Auth: " + request.getHeader("Authorization"));
         LoginUser loginUser = tokenService.getLoginUser(request);
+        System.out.println("[JWT-Filter] LoginUser: " + (loginUser != null ? loginUser.getUsername() : "null"));
         if (loginUser != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             tokenService.refreshToken(loginUser);
             UsernamePasswordAuthenticationToken authToken =

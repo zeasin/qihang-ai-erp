@@ -40,7 +40,11 @@ public class LoginUser implements UserDetails {
     }
     public static LoginUser fromJson(String json) {
         try { return mapper.readValue(json, LoginUser.class); }
-        catch (Exception e) { return null; }
+        catch (Exception e) {
+            System.out.println("[LoginUser] fromJson error: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Long getUserId() { return userId; }
@@ -66,6 +70,7 @@ public class LoginUser implements UserDetails {
     @JsonIgnore @Override public boolean isCredentialsNonExpired() { return true; }
     @JsonIgnore @Override public boolean isEnabled() { return user != null && "0".equals(user.getStatus()); }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (permissions == null || permissions.isEmpty()) return Collections.emptyList();
