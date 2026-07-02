@@ -1,0 +1,32 @@
+# Maven
+target/
+*.jar
+*.war
+*.zip
+*.tar.gz
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+ai-frontend/node_modules/
+ai-frontend/dist/
+
+# Env
+.env
+.env.local
+
+# Logs
+*.log
+logs/

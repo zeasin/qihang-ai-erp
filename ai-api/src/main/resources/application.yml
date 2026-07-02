@@ -1,0 +1,48 @@
+server:
+  port: 8099
+
+spring:
+  application:
+    name: qihang-ai-platform
+  profiles:
+    active: dev
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/qihang_ai_platform
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 10
+      min-idle: 5
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 10s
+
+  ai:
+    openai:
+      base-url: https://api.deepseek.com/v1
+      api-key: ${DEEPSEEK_API_KEY:}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.7
+          max-tokens: 4096
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: cn.qihang.ai.business.model
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    cn.qihang.ai: DEBUG
