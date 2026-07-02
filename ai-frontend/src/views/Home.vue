@@ -4,12 +4,29 @@
       <el-header class="header">
         <div class="logo">启航AI ERP</div>
         <div class="header-actions">
-          <el-button @click="$router.push('/chat')" type="primary">
+          <el-button @click="$router.push('/chat')" type="primary" size="small">
             🤖 AI对话
           </el-button>
-          <el-button @click="$router.push('/dashboard')">
+          <el-button @click="$router.push('/dashboard')" size="small">
             📊 智能看板
           </el-button>
+          <el-dropdown trigger="click" v-if="authStore.isLoggedIn">
+            <el-button size="small" class="user-btn">
+              <span class="user-avatar">{{ authStore.userName.charAt(0) }}</span>
+              {{ authStore.userName }}
+              <el-icon><ArrowDown /></el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item disabled>
+                  <div style="font-size:12px;color:#999">
+                    {{ authStore.roles.map(r => r.roleName).join(' / ') }}
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </el-header>
 
@@ -69,9 +86,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Search } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { Search, ArrowDown } from '@element-plus/icons-vue'
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const searchQuery = ref('')
 
 const workspaces = [
@@ -90,6 +110,12 @@ const quickItems = [
   { icon: '⚠️', title: '库存预警', desc: '库存不足的商品列表', action: '/chat?q=库存预警' },
   { icon: '📈', title: '数据分析', desc: 'AI智能分析解读', action: '/chat?q=销售分析' },
 ]
+
+async function handleLogout() {
+  await authStore.logout()
+  ElMessage.success('已退出登录')
+  router.push('/login')
+}
 
 function goChat() {
   if (searchQuery.value.trim()) {
@@ -139,6 +165,12 @@ function quickAction(item: any) {
 .ws-desc { font-size: 12px; color: #999; margin-top: 2px; }
 .ws-badge { flex-shrink: 0; }
 
+.user-btn { display: flex; align-items: center; gap: 6px; }
+.user-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #409eff; color: #fff; font-size: 12px; font-weight: 600;
+}
 .header {
   display: flex;
   justify-content: space-between;

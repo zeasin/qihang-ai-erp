@@ -45,6 +45,11 @@
             <name>Spring Releases</name>
             <url>https://repo.spring.io/release</url>
         </repository>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -96,6 +101,13 @@
                 <groupId>cn.qihang</groupId>
                 <artifactId>ai-business</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!-- MyBatis-Plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.qihang</groupId>
