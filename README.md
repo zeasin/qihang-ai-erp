@@ -1,6 +1,6 @@
-# 启航AI企业业务平台 (Qihang AI Platform)
+# 启航AI ERP (Qihang AI ERP)
 
-> **企业级AI原生业务平台** —— 以AI为第一驱动力，重塑企业业务管理方式。
+> **AI驱动的新一代企业资源计划系统** —— 以AI为第一驱动力，重塑企业业务管理方式。
 
 ## 📸 界面预览
 
@@ -61,7 +61,7 @@
 ## 📁 项目模块
 
 ```
-qihang-ai-platform/
+qihang-ai-erp/
 ├── ai-common/          # 公共模块：工具类、统一返回、异常体系
 ├── ai-infrastructure/  # AI基础设施：ChatClient、模型路由、向量库
 ├── ai-agent/           # AI Agent编排：Agent注册、工具定义、工作流
@@ -194,7 +194,7 @@ curl http://localhost:8099/api/ai/ping
 
 **预期返回：**
 ```json
-{"code":200,"data":"启航AI企业业务平台服务运行中","msg":"操作成功"}
+{"code":200,"data":"启航AI ERP服务运行中","msg":"操作成功"}
 ```
 
 ### 5️⃣ 后端配置说明
@@ -309,7 +309,7 @@ npm run dev
 
 ---
 
-## 🔗 与启航电商ERP的关系
+## 🔗 与启航AI ERP的关系
 
 本平台与老ERP（qihang-erp-open）是**平级协作**关系：
 

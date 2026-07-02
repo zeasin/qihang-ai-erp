@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.qihang</groupId>
-    <artifactId>qihang-ai-platform</artifactId>
+    <artifactId>qihang-ai-erp</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>qihang-ai-platform</name>
-    <description>启航AI企业业务平台 - 企业级AI原生业务平台</description>
-    <url>https://gitee.com/qiliping/qihang-ai-platform</url>
+    <name>qihang-ai-erp</name>
+    <description>启航AI ERP - AI驱动的新一代企业资源计划系统</description>
+    <url>https://gitee.com/qiliping/qihang-ai-erp</url>
 
     <modules>
         <module>ai-common</module>

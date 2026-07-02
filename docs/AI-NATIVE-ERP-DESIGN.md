@@ -1,8 +1,8 @@
-# 🚀 启航电商ERP —— AI原生ERP设计文档
+# 🚀 启航AI ERP —— AI原生ERP设计文档
 
 > **版本**：v1.0 | **日期**：2026-07-02 | **状态**：规划中
 >
-> 本文档定义了将启航电商ERP从传统ERP重构为AI原生ERP的完整技术方案。
+> 本文档定义了将启航AI ERP从传统ERP重构为AI原生ERP的完整技术方案。
 
 ---
 
@@ -29,7 +29,7 @@
 ### 1.1 当前架构
 
 ```
-qihang-erp-open/
+qihang-ai-erp-open/
 ├── erp-api/          # API 层（Controller + 配置）
 ├── security/         # 安全认证（Spring Security）
 ├── common/           # 公共工具类
@@ -226,7 +226,7 @@ public class AiConfig {
     public ChatClient chatClient(ChatClient.Builder builder) {
         return builder
             .defaultSystem("""
-                你是启航电商ERP的AI助手，擅长处理电商业务问题。
+                你是启航AI ERP的AI助手，擅长处理电商业务问题。
                 你可以查询订单、商品、库存信息，并进行分析和建议。
                 请用专业、简洁的中文回答。
                 """)
@@ -1204,9 +1204,9 @@ public class McpServerConfig {
     @Bean
     public McpServer mcpServer(AgentRegistry agentRegistry) {
         McpServerSchema schema = new McpServerSchema();
-        schema.setName("qihang-erp");
+        schema.setName("qihang-ai-erp");
         schema.setVersion("4.1.0");
-        schema.setDescription("启航电商ERP系统 - 支持订单、商品、库存、采购等管理操作");
+        schema.setDescription("启航AI ERP系统 - 支持订单、商品、库存、采购等管理操作");
 
         // 注册所有Tool
         List<McpTool> tools = agentRegistry.getAllTools().stream()
@@ -1236,7 +1236,7 @@ public class McpServerConfig {
 
 ```json
 {
-  "name": "qihang-erp",
+  "name": "qihang-ai-erp",
   "version": "4.1.0",
   "tools": [
     {
@@ -1310,7 +1310,7 @@ public class McpServerConfig {
 ```yaml
 openapi: 3.0.0
 info:
-  title: 启航电商ERP OpenAPI
+  title: 启航AI ERP OpenAPI
   version: 4.1.0
   description: 供AI大模型和企业系统调用的开放接口
 

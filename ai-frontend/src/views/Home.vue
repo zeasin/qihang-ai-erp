@@ -2,7 +2,7 @@
   <div class="home">
     <el-container>
       <el-header class="header">
-        <div class="logo">启航AI · 企业业务平台</div>
+        <div class="logo">启航AI ERP</div>
         <div class="header-actions">
           <el-button @click="$router.push('/chat')" type="primary">
             🤖 AI对话
@@ -15,8 +15,8 @@
 
       <el-main class="main">
         <div class="welcome">
-          <h1>欢迎使用启航AI企业业务平台</h1>
-          <p class="subtitle">以AI为驱动力的企业级智能业务平台</p>
+          <h1>欢迎使用启航AI ERP</h1>
+          <p class="subtitle">以 AI 之力，重塑企业未来 — 智能、高效、可感知的新一代企业资源计划系统</p>
 
           <el-card class="search-card">
             <el-input

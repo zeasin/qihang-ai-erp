@@ -49,7 +49,7 @@ const route = useRoute()
 const input = ref('')
 const loading = ref(false)
 const messages = ref<Array<{role: string, content: string}>>([
-  { role: 'assistant', content: '您好！我是启航AI助手。您可以问我关于订单、商品、库存、销售数据等问题，我帮您查询和分析。' }
+  { role: 'assistant', content: '您好！我是启航AI ERP助手。您可以问我关于订单、商品、库存、销售数据等问题，我帮您查询和分析。' }
 ])
 const messagesRef = ref<HTMLElement>()
 

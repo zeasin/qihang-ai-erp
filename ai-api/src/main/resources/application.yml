@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: qihang-ai-platform
+    name: qihang-ai-erp
   profiles:
     active: dev
 
