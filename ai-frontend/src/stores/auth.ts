@@ -45,15 +45,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 获取用户默认工作台路由
   const defaultRoute = computed(() => {
-    if (roles.value.length === 0) return '/dashboard'
-    // 优先取第一个非 admin 角色的工作台
-    for (const r of roles.value) {
-      if (r.roleKey !== 'admin' && roleWorkspaceMap[r.roleKey]) {
-        return roleWorkspaceMap[r.roleKey]
-      }
-    }
-    // 默认管理员进 dashboard
-    return '/dashboard'
+    // 所有用户登录后都先进首页，首页按权限动态渲染工作台卡片
+    return '/'
   })
 
   // 登录
