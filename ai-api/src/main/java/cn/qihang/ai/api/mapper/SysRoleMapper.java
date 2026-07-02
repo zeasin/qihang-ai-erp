@@ -45,4 +45,7 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
 
     @Select("SELECT * FROM sys_menu WHERE status = '0' AND menu_type IN ('M', 'C')")
     List<SysMenu> selectAllVisibleMenus();
+
+    @Delete("DELETE FROM sys_role_menu WHERE menu_id = #{menuId}")
+    int deleteRoleMenuByMenuId(Long menuId);
 }

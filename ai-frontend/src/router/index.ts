@@ -80,6 +80,35 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+
+  // ─── 系统管理（含侧边栏布局） ───
+  {
+    path: '/system',
+    component: () => import('../views/system/SystemLayout.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] },
+    children: [
+      {
+        path: 'menus',
+        name: 'system-menus',
+        component: () => import('../views/system/Menus.vue'),
+      },
+      {
+        path: 'roles',
+        name: 'system-roles',
+        component: () => import('../views/system/Roles.vue'),
+      },
+      {
+        path: 'users',
+        name: 'system-users',
+        component: () => import('../views/system/Users.vue'),
+      },
+      {
+        path: 'dicts',
+        name: 'system-dicts',
+        component: () => import('../views/system/Dicts.vue'),
+      },
+    ],
+  },
 ]
 
 const router = createRouter({

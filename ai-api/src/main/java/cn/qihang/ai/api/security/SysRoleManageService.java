@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.*;
 import java.util.stream.Collectors;
 
 @Service
 public class SysRoleManageService {
+
+    @Autowired
+    private cn.qihang.ai.api.mapper.SysMenuMapper menuMapper;
 
     @Autowired
     private SysRoleMapper roleMapper;
@@ -56,6 +60,21 @@ public class SysRoleManageService {
                 .peek(m -> m.setChildren(buildTree(all, m.getMenuId())))
                 .collect(Collectors.toList());
     }
+
+    public void saveMenu(SysMenu menu) {
+        if (menu.getMenuId() == null) {
+            menu.setCreateTime(new Date());
+            menuMapper.insert(menu);
+        } else {
+            menuMapper.updateById(menu);
+        }
+    }
+
+    public void deleteMenu(Long menuId) {
+        menuMapper.deleteById(menuId);
+        roleMapper.deleteRoleMenuByMenuId(menuId);
+    }
+
 
     public List<Map<String, Object>> listUsers() {
         List<Map<String, Object>> users = roleMapper.selectAllUsers();

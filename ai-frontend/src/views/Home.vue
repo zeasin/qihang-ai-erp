@@ -141,7 +141,7 @@ function goMenu(m: any) {
 }
 
 function goSystem() {
-  router.push('/system/roles')
+  router.push('/system/menus')
 }
 
 const quickItems = computed(() => {

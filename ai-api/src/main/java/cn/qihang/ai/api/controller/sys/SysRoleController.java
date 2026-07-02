@@ -60,4 +60,16 @@ public class SysRoleController {
         roleManageService.updateUserRoles(id, roleIds);
         return AjaxResult.success();
     }
+
+    @PostMapping("/menu/save")
+    public AjaxResult saveMenu(@RequestBody cn.qihang.ai.business.model.SysMenu menu) {
+        roleManageService.saveMenu(menu);
+        return AjaxResult.success();
+    }
+
+    @DeleteMapping("/menu/{id}")
+    public AjaxResult deleteMenu(@PathVariable Long id) {
+        roleManageService.deleteMenu(id);
+        return AjaxResult.success();
+    }
 }
