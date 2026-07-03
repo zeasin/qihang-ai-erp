@@ -70,8 +70,8 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (24,   '接口授权',     13, 7,  '/system/openAuth',  'system/OpenAuth',     'system:openAuth:manage',  '🔑', 'C'),
 -- ====================================================================
 -- ====================================================================
-(19,   '店铺管理',     26, 6,  '/channel/shops',     'channel/Shops',       'channel:shop:view',       '🏪', 'C'),
-(20,   '商户管理',     26, 7,  '/channel/merchants', 'channel/Merchants',   'channel:merchant:view',   '🏢', 'C'),
+(19,   '店铺管理',     26, 6,  '/basic/shops',       'basic/Shops',         'channel:shop:view',       '🏪', 'C'),
+(20,   '商户管理',     26, 7,  '/basic/merchants',   'basic/Merchants',     'channel:merchant:view',   '🏢', 'C'),
 
 -- ====================================================================
 -- 一级：基础数据 (menu_id=26, M=目录)

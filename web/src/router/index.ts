@@ -81,22 +81,22 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
-  // ─── 渠道管理 ───
+  // ─── 基础数据 ───
   {
-    path: '/channel',
-    redirect: '/channel/shops',
-    component: () => import('../views/channel/ChannelLayout.vue'),
+    path: '/basic',
+    redirect: '/basic/shops',
+    component: () => import('../views/basic/BasicLayout.vue'),
     meta: { requiresAuth: true, roles: ['admin'] },
     children: [
       {
         path: 'shops',
-        name: 'channel-shops',
-        component: () => import('../views/channel/Shops.vue'),
+        name: 'basic-shops',
+        component: () => import('../views/basic/Shops.vue'),
       },
       {
         path: 'merchants',
-        name: 'channel-merchants',
-        component: () => import('../views/channel/Merchants.vue'),
+        name: 'basic-merchants',
+        component: () => import('../views/basic/Merchants.vue'),
       },
     ],
   },

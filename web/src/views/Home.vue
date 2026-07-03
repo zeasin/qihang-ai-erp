@@ -27,7 +27,7 @@
                   <div style="width:100%" @click="$router.push('/system/menus')">⚙️ 系统管理</div>
                 </el-dropdown-item>
                 <el-dropdown-item v-if="isAdmin()">
-                  <div style="width:100%" @click="$router.push('/channel/shops')">📡 基础数据</div>
+                  <div style="width:100%" @click="$router.push('/basic/shops')">📡 基础数据</div>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
