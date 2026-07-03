@@ -3,26 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>cn.qihang</groupId>
+    <groupId>cn.qihangerp</groupId>
     <artifactId>qihang-ai-erp</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>qihang-ai-erp</name>
     <description>启航AI ERP - AI驱动的新一代企业资源计划系统</description>
-    <url>https://gitee.com/qiliping/qihang-ai-erp</url>
 
     <modules>
-        <module>ai-common</module>
-        <module>ai-infrastructure</module>
-        <module>ai-agent</module>
-        <module>ai-nl2sql</module>
-        <module>ai-rag</module>
-        <module>ai-business</module>
-        <module>ai-integration</module>
-        <module>ai-api</module>
-        <module>ai-mcp-server</module>
+        <module>common</module>
+        <module>model</module>
+        <module>mapper</module>
+        <module>security</module>
+        <module>service</module>
+        <module>api</module>
     </modules>
 
     <properties>
@@ -30,30 +24,38 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <spring-boot.version>4.1.0</spring-boot.version>
-        <spring-ai.version>2.0.0</spring-ai.version>
         <mybatis-plus.version>3.5.16</mybatis-plus.version>
         <jwt.version>0.12.6</jwt.version>
-        <fastjson2.version>2.0.43</fastjson2.version>
-        <lombok.version>1.18.30</lombok.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <url>https://repo1.maven.org/maven2</url>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>cn.qihangerp</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.qihangerp</groupId>
+                <artifactId>model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.qihangerp</groupId>
+                <artifactId>mapper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.qihangerp</groupId>
+                <artifactId>security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.qihangerp</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -61,58 +63,10 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <!-- Spring AI BOM -->
-            <dependency>
-                <groupId>org.springframework.ai</groupId>
-                <artifactId>spring-ai-bom</artifactId>
-                <version>${spring-ai.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- 内部模块 -->
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-infrastructure</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-agent</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-nl2sql</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-rag</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-business</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- MyBatis-Plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.qihang</groupId>
-                <artifactId>ai-integration</artifactId>
-                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -121,17 +75,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>${fastjson2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 
@@ -143,11 +88,6 @@
                 <configuration>
                     <parameters>true</parameters>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
             </plugin>
         </plugins>
     </build>
