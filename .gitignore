@@ -20,8 +20,8 @@ target/
 Thumbs.db
 
 # Node
-ai-frontend/node_modules/
-ai-frontend/dist/
+web/node_modules/
+web/dist/
 
 # Env
 .env
