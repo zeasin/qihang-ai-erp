@@ -136,3 +136,25 @@ INSERT INTO erp_supplier (id, name, number, link_man, contact, address, create_b
 (2, '深圳电子元器件供应商', 'SZDZ', '李四', '13900139002', '广东省深圳市福田区', 'admin');
 
 SELECT setval('erp_supplier_id_seq', (SELECT MAX(id) FROM erp_supplier));
+
+-- ====================================================================
+-- 采购承运商
+-- ====================================================================
+DROP TABLE IF EXISTS erp_purchase_logistics;
+CREATE TABLE erp_purchase_logistics (
+    id BIGSERIAL PRIMARY KEY,
+    code VARCHAR(50),
+    name VARCHAR(100) NOT NULL,
+    remark VARCHAR(255),
+    status INT DEFAULT 0,
+    merchant_id BIGINT DEFAULT 0,
+    shop_id BIGINT DEFAULT 0
+);
+
+INSERT INTO erp_purchase_logistics (id, code, name, status) VALUES
+(1, 'SF', '顺丰快递', 1),
+(2, 'JD122', '京东物流', 1),
+(3, 'ZTO', '中通快递', 1),
+(4, 'YTO', '圆通速递', 1);
+
+SELECT setval('erp_purchase_logistics_id_seq', (SELECT MAX(id) FROM erp_purchase_logistics));

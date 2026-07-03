@@ -70,4 +70,7 @@ export const api = {
   supplierList: '/sys-api/basic/supplier/list',
   supplierSave: '/sys-api/basic/supplier/save',
   supplierDelete: (id: number) => `/sys-api/basic/supplier/${id}`,
+  carrierList: '/sys-api/basic/carrier/list',
+  carrierSave: '/sys-api/basic/carrier/save',
+  carrierDelete: (id: number) => `/sys-api/basic/carrier/${id}`,
 }
