@@ -96,3 +96,43 @@ INSERT INTO o_goods_category_attribute_value (id, category_attribute_id, value, 
 (6, 2, '默认', '00', 0, 0);
 
 SELECT setval('o_goods_category_attribute_value_id_seq', (SELECT MAX(id) FROM o_goods_category_attribute_value));
+
+-- ====================================================================
+-- 供应商档案
+-- ====================================================================
+DROP TABLE IF EXISTS erp_supplier;
+CREATE TABLE erp_supplier (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    number VARCHAR(18),
+    is_shipper INT DEFAULT 0,
+    warehouse_id BIGINT DEFAULT 0,
+    link_man VARCHAR(10),
+    contact VARCHAR(15),
+    province VARCHAR(20),
+    city VARCHAR(20),
+    county VARCHAR(20),
+    address VARCHAR(100),
+    usci VARCHAR(50),
+    bl VARCHAR(255),
+    bl_period VARCHAR(30),
+    bl_faren VARCHAR(25),
+    bank VARCHAR(100),
+    bank_account_name VARCHAR(100),
+    bank_account VARCHAR(100),
+    purchaser_name VARCHAR(50),
+    remark VARCHAR(100),
+    disable INT DEFAULT 0,
+    is_delete INT DEFAULT 0,
+    merchant_id BIGINT DEFAULT 0,
+    create_by VARCHAR(25),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_by VARCHAR(25),
+    update_time TIMESTAMP
+);
+
+INSERT INTO erp_supplier (id, name, number, link_man, contact, address, create_by) VALUES
+(1, '广东中山照明供应商', 'ZMGY', '张三', '13800138001', '广东省中山市古镇镇', 'admin'),
+(2, '深圳电子元器件供应商', 'SZDZ', '李四', '13900139002', '广东省深圳市福田区', 'admin');
+
+SELECT setval('erp_supplier_id_seq', (SELECT MAX(id) FROM erp_supplier));

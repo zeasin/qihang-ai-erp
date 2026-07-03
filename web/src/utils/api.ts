@@ -67,4 +67,7 @@ export const api = {
   categoryAttrValueList: '/sys-api/basic/category/attribute/value/list',
   categoryAttrValueSave: '/sys-api/basic/category/attribute/value/save',
   categoryAttrValueDelete: (id: number) => `/sys-api/basic/category/attribute/value/${id}`,
+  supplierList: '/sys-api/basic/supplier/list',
+  supplierSave: '/sys-api/basic/supplier/save',
+  supplierDelete: (id: number) => `/sys-api/basic/supplier/${id}`,
 }
