@@ -45,22 +45,22 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 一级：工作台/功能 (parent_id=0, 平铺直达页面)
 -- ====================================================================
 (1,  '智能看板',       0, 1,  '/dashboard',          'Dashboard',           'dashboard:view',         '📊', 'C'),
-(2,  '订单工作台',     0, 2,  '/workspace/order',    'workspace/Order',     'workspace:order:view',   '📋', 'C'),
+(2,  '订单工作台',     0, 2,  '/workspace/order',    'workspace/OrderWorkspace',     'workspace:order:view',   '📋', 'C'),
 (3,    '审核订单',     2, 1,  null,                  null,                  'workspace:order:audit',  '✅', 'F'),
 (4,    '打印面单',     2, 2,  null,                  null,                  'workspace:order:print',  '🖨️', 'F'),
 (5,    '推送仓库',     2, 3,  null,                  null,                  'workspace:order:push',   '📤', 'F'),
-(6,  '拣货工作台',     0, 3,  '/workspace/picking',  'workspace/Picking',   'workspace:picking:view', '🔍', 'C'),
-(7,  '打包工作台',     0, 4,  '/workspace/packing',  'workspace/Packing',   'workspace:packing:view', '📦', 'C'),
-(8,  '发货工作台',     0, 5,  '/workspace/shipping', 'workspace/Shipping',  'workspace:shipping:view','🚚', 'C'),
-(9,  '收货工作台',     0, 6,  '/workspace/receiving','workspace/Receiving', 'workspace:receiving:view','📥', 'C'),
-(10, '质检工作台',     0, 7,  '/workspace/qc',       'workspace/QC',        'workspace:qc:view',      '🔬', 'C'),
-(11, '盘点工作台',     0, 8,  '/workspace/counting', 'workspace/Counting',  'workspace:counting:view','📋', 'C'),
+(6,  '拣货工作台',     0, 3,  '/workspace/picking',  'workspace/PickingWorkspace',   'workspace:picking:view', '🔍', 'C'),
+(7,  '打包工作台',     0, 4,  '/workspace/packing',  'workspace/PackingWorkspace',   'workspace:packing:view', '📦', 'C'),
+(8,  '发货工作台',     0, 5,  '/workspace/shipping', 'workspace/ShippingWorkspace',  'workspace:shipping:view','🚚', 'C'),
+(9,  '收货工作台',     0, 6,  '/workspace/receiving','workspace/ReceivingWorkspace', 'workspace:receiving:view','📥', 'C'),
+(10, '质检工作台',     0, 7,  '/workspace/qc',       'workspace/QCWorkspace',        'workspace:qc:view',      '🔬', 'C'),
+(11, '盘点工作台',     0, 8,  '/workspace/counting', 'workspace/CountingWorkspace',  'workspace:counting:view','📋', 'C'),
 (12, 'AI对话',        0, 9,  '/chat',               'Chat',                'chat:view',              '🤖', 'C'),
 -- ====================================================================
 -- 一级：系统管理 (menu_id=13, M=目录)
 -- 仅保留运维管理类功能
 -- ====================================================================
-(13, '系统管理',       0, 99, null,                 null,                  'system:manage',           '⚙️', 'M'),
+(13, '系统管理',       0, 99, '/system',            'system/SystemLayout', 'system:manage',           '⚙️', 'M'),
 (14,   '角色管理',     13, 1,  '/system/roles',     'system/Roles',        'system:role:manage',      '👥', 'C'),
 (15,   '用户管理',     13, 2,  '/system/users',     'system/Users',        'system:user:manage',      '👤', 'C'),
 
@@ -77,7 +77,7 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 一级：基础数据 (menu_id=26, M=目录)
 -- 收录各业务模块的公共基础/主数据，方便统一维护
 -- ====================================================================
-(26, '基础数据',       0, 50, null,                 null,                  'basic:data:manage',       '🗂️', 'M'),
+(26, '基础数据',       0, 50, '/basic',             'basic/BasicLayout',   'basic:data:manage',       '🗂️', 'M'),
 
 -- 商品主数据
 (100, '商品分类管理',  26, 1,  '/basic/category',    'basic/Category',      'basic:category:manage',   '🏷️', 'C'),

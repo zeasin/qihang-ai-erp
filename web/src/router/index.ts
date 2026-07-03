@@ -1,10 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import request from '../utils/request'
+import { api } from '../utils/api'
 
 // 不需要登录就能访问的白名单
 const whiteList = ['/login']
 
-const routes: RouteRecordRaw[] = [
+// Vite glob: 预加载所有视图组件，供动态路由使用
+const viewModules = import.meta.glob('../views/**/*.vue')
+
+// ─── 静态路由（固定不变） ───
+const staticRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
@@ -16,145 +22,97 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/Home.vue'),
     meta: { requiresAuth: true },
   },
-  {
-    path: '/chat',
-    name: 'chat',
-    component: () => import('../views/Chat.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () => import('../views/Dashboard.vue'),
-    meta: { requiresAuth: true },
-  },
-
-  // ─── 角色工作台 ───
-  {
-    path: '/workspace',
-    name: 'workspace',
-    redirect: '/workspace/order',
-    meta: { requiresAuth: true },
-    children: [
-      {
-        path: 'order',
-        name: 'workspace-order',
-        component: () => import('../views/workspace/OrderWorkspace.vue'),
-        meta: { roles: ['admin', 'order'] },
-      },
-      {
-        path: 'picking',
-        name: 'workspace-picking',
-        component: () => import('../views/workspace/PickingWorkspace.vue'),
-        meta: { roles: ['admin', 'picker'] },
-      },
-      {
-        path: 'packing',
-        name: 'workspace-packing',
-        component: () => import('../views/workspace/PackingWorkspace.vue'),
-        meta: { roles: ['admin', 'packer'] },
-      },
-      {
-        path: 'shipping',
-        name: 'workspace-shipping',
-        component: () => import('../views/workspace/ShippingWorkspace.vue'),
-        meta: { roles: ['admin', 'shipper'] },
-      },
-      {
-        path: 'receiving',
-        name: 'workspace-receiving',
-        component: () => import('../views/workspace/ReceivingWorkspace.vue'),
-        meta: { roles: ['admin', 'receiver'] },
-      },
-      {
-        path: 'qc',
-        name: 'workspace-qc',
-        component: () => import('../views/workspace/QCWorkspace.vue'),
-        meta: { roles: ['admin', 'qc'] },
-      },
-      {
-        path: 'counting',
-        name: 'workspace-counting',
-        component: () => import('../views/workspace/CountingWorkspace.vue'),
-        meta: { roles: ['admin', 'counter'] },
-      },
-    ],
-  },
-
-  // ─── 基础数据 ───
-  {
-    path: '/basic',
-    redirect: '/basic/shops',
-    component: () => import('../views/basic/BasicLayout.vue'),
-    meta: { requiresAuth: true, roles: ['admin'] },
-    children: [
-      {
-        path: 'shops',
-        name: 'basic-shops',
-        component: () => import('../views/basic/Shops.vue'),
-      },
-      {
-        path: 'merchants',
-        name: 'basic-merchants',
-        component: () => import('../views/basic/Merchants.vue'),
-      },
-      {
-        path: 'platforms',
-        name: 'basic-platforms',
-        component: () => import('../views/basic/Platforms.vue'),
-      },
-    ],
-  },
-  // ─── 系统管理（含侧边栏布局） ───
-  {
-    path: '/system',
-    component: () => import('../views/system/SystemLayout.vue'),
-    meta: { requiresAuth: true, roles: ['admin'] },
-    children: [
-      {
-        path: 'menus',
-        name: 'system-menus',
-        component: () => import('../views/system/Menus.vue'),
-      },
-      {
-        path: 'roles',
-        name: 'system-roles',
-        component: () => import('../views/system/Roles.vue'),
-      },
-      {
-        path: 'users',
-        name: 'system-users',
-        component: () => import('../views/system/Users.vue'),
-      },
-      {
-        path: 'dicts',
-        name: 'system-dicts',
-        component: () => import('../views/system/Dicts.vue'),
-      },
-      {
-        path: 'configs',
-        name: 'system-configs',
-        component: () => import('../views/system/Configs.vue'),
-      },
-      {
-        path: 'tasks',
-        name: 'system-tasks',
-        component: () => import('../views/system/Tasks.vue'),
-      },
-      {
-        path: 'openAuth',
-        name: 'system-openAuth',
-        component: () => import('../views/system/OpenAuth.vue'),
-      },
-
-    ],
-  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: staticRoutes,
 })
+
+// ─── 动态路由加载状态 ───
+let dynamicRoutesLoaded = false
+
+function resolveComponent(component: string) {
+  const path = `../views/${component}.vue`
+  return viewModules[path]
+}
+
+/**
+ * 根据菜单树生成动态路由
+ * - M 类（目录）：作为父路由，component 指向 Layout，children 为子菜单
+ * - C 类且 parent_id=0（独立页面）：作为独立路由，无 Layout 包裹
+ * - C 类且有 M 父级：作为父路由的 children
+ * - F 类（按钮）：不生成路由
+ */
+function generateRoutes(menuTree: any[]): RouteRecordRaw[] {
+  const routes: RouteRecordRaw[] = []
+
+  for (const menu of menuTree) {
+    if (menu.menuType === 'M' && menu.path && menu.component) {
+      // ── 目录：父路由 + Layout ──
+      const children: RouteRecordRaw[] = []
+      if (menu.children) {
+        for (const child of menu.children) {
+          if (child.menuType === 'C' && child.path && child.component) {
+            // 子路由 path 取相对路径（去掉父级前缀）
+            const relativePath = child.path.startsWith(menu.path + '/')
+              ? child.path.slice(menu.path.length + 1)
+              : child.path
+            children.push({
+              path: relativePath,
+              name: `menu-${child.menuId}`,
+              component: resolveComponent(child.component),
+              meta: { requiresAuth: true, title: child.menuName, perms: child.perms },
+            })
+          }
+        }
+      }
+      routes.push({
+        path: menu.path,
+        component: resolveComponent(menu.component),
+        redirect: children[0] ? `${menu.path}/${children[0].path}` : undefined,
+        meta: { requiresAuth: true, title: menu.menuName, perms: menu.perms },
+        children,
+      })
+    } else if (menu.menuType === 'C' && menu.path && menu.component && menu.parentId === 0) {
+      // ── 独立页面（无 Layout 包裹） ──
+      routes.push({
+        path: menu.path,
+        name: `menu-${menu.menuId}`,
+        component: resolveComponent(menu.component),
+        meta: { requiresAuth: true, title: menu.menuName, perms: menu.perms },
+      })
+    }
+  }
+
+  return routes
+}
+
+async function loadDynamicRoutes() {
+  if (dynamicRoutesLoaded) return
+  try {
+    const res: any = await request.get(api.menuTree)
+    const menuTree: any[] = res.data || []
+    const dynamicRoutes = generateRoutes(menuTree)
+    for (const route of dynamicRoutes) {
+      router.addRoute(route)
+    }
+    dynamicRoutesLoaded = true
+  } catch (e) {
+    console.error('加载动态路由失败', e)
+  }
+}
+
+/** 登出时调用：清除动态路由，下次登录重新加载 */
+export function resetDynamicRoutes() {
+  const staticNames = new Set(['login', 'home'])
+  router.getRoutes().forEach(r => {
+    if (r.name && !staticNames.has(r.name as string)) {
+      router.removeRoute(r.name)
+    }
+  })
+  dynamicRoutesLoaded = false
+}
 
 // ─── 导航守卫 ───
 router.beforeEach(async (to, _from, next) => {
@@ -162,10 +120,11 @@ router.beforeEach(async (to, _from, next) => {
 
   // 白名单（登录页）直接放行
   if (whiteList.includes(to.path)) {
-    // 已登录用户访问登录页 → 跳首页
     if (token) {
       next('/')
     } else {
+      // 回到登录页时清除动态路由
+      if (dynamicRoutesLoaded) resetDynamicRoutes()
       next()
     }
     return
@@ -187,13 +146,22 @@ router.beforeEach(async (to, _from, next) => {
     }
   }
 
-  // 角色权限校验（如果路由配置了 roles）
-  const requiredRoles = to.meta?.roles as string[] | undefined
-  if (requiredRoles && requiredRoles.length > 0) {
-    const userRoles = authStore.roles.map(r => r.roleKey)
-    const hasRole = requiredRoles.some(r => r === 'admin' || userRoles.includes(r))
-    if (!hasRole) {
-      // 没有权限，跳转到默认工作台
+  // 加载动态路由（仅首次）
+  if (!dynamicRoutesLoaded) {
+    await loadDynamicRoutes()
+    // 动态路由添加后，重新匹配当前目标
+    next({ ...to, replace: true })
+    return
+  }
+
+  // 权限校验：基于路由 meta.perms
+  const requiredPerms = to.meta?.perms as string | undefined
+  if (requiredPerms) {
+    const hasPerm =
+      authStore.permissions.includes(requiredPerms) ||
+      authStore.permissions.includes('*:*:*') ||
+      authStore.roles.some(r => r.roleKey === 'admin')
+    if (!hasPerm) {
       next(authStore.defaultRoute)
       return
     }

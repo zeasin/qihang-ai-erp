@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import request from '../utils/request'
 import { api } from '../utils/api'
+import { resetDynamicRoutes } from '../router'
 
 export interface UserInfo {
   userId: number
@@ -87,6 +88,8 @@ export const useAuthStore = defineStore('auth', () => {
     roles.value = []
     permissions.value = []
     localStorage.removeItem('token')
+    // 清除动态路由，下次登录重新加载
+    resetDynamicRoutes()
   }
 
   // 从 token 恢复登录态（页面刷新时调用）
