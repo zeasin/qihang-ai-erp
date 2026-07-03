@@ -25,6 +25,10 @@
               <span>用户管理</span>
             </el-menu-item>
 
+            <el-menu-item index="/system/platforms">
+              <el-icon><Connection /></el-icon>
+              <span>电商平台设置</span>
+            </el-menu-item>
             <el-menu-item index="/system/configs">
               <el-icon><Setting /></el-icon>
               <span>系统参数</span>

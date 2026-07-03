@@ -105,6 +105,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
+import { api } from '../../utils/api'
 
 const activeTab = ref('types')
 const types = ref<any[]>([])
@@ -116,13 +117,13 @@ const typeDlg = reactive({ visible: false, isNew: true, form: { dictId: null, di
 const dataDlg = reactive({ visible: false, isNew: true, form: { dictCode: null, dictLabel: '', dictValue: '', dictSort: 0, isDefault: 'N', dictType: '', remark: '' } })
 
 async function fetchTypes() {
-  const r: any = await request.get('/sys-api/system/dict/type/list')
+  const r: any = await request.get(api.dictTypeList)
   types.value = r.data || []
 }
 
 async function fetchData() {
   if (!currentType.value) { dataList.value = []; return }
-  const r: any = await request.get('/sys-api/system/dict/data/list', { params: { dictType: currentType.value.dictType } })
+  const r: any = await request.get(api.dictDataList, { params: { dictType: currentType.value.dictType } })
   dataList.value = r.data || []
 }
 
@@ -148,7 +149,7 @@ function showTypeDialog(row: any) {
 async function saveType() {
   saving.value = true
   try {
-    await request.post('/sys-api/system/dict/type/save', typeDlg.form)
+    await request.post(api.dictTypeSave, typeDlg.form)
     ElMessage.success(typeDlg.isNew ? '字典已创建' : '字典已更新')
     typeDlg.visible = false; await fetchTypes()
   } catch (e: any) { ElMessage.error(e.message) }
@@ -158,7 +159,7 @@ async function saveType() {
 async function deleteType(row: any) {
   try {
     await ElMessageBox.confirm(`确定删除字典「${row.dictName}」及其所有数据？`, '确认')
-    await request.delete(`/sys-api/system/dict/type/${row.dictId}`)
+    await request.delete(api.dictTypeDelete(row.dictId))
     ElMessage.success('字典已删除'); await fetchTypes()
   } catch {}
 }
@@ -172,7 +173,7 @@ function showDataDialog(row: any) {
 async function saveData() {
   saving.value = true
   try {
-    await request.post('/sys-api/system/dict/data/save', dataDlg.form)
+    await request.post(api.dictDataSave, dataDlg.form)
     ElMessage.success(dataDlg.isNew ? '数据已创建' : '数据已更新')
     dataDlg.visible = false; await fetchData()
   } catch (e: any) { ElMessage.error(e.message) }
@@ -182,7 +183,7 @@ async function saveData() {
 async function deleteData(row: any) {
   try {
     await ElMessageBox.confirm(`确定删除数据「${row.dictLabel}」？`, '确认')
-    await request.delete(`/sys-api/system/dict/data/${row.dictCode}`)
+    await request.delete(api.dictDataDelete(row.dictCode))
     ElMessage.success('数据已删除'); await fetchData()
   } catch {}
 }

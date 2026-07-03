@@ -8,15 +8,13 @@
       <el-container>
         <el-aside width="200px" class="ch-sidebar">
           <el-menu :default-active="activeMenu" router style="border-right: none">
-            <el-menu-item index="/channel/platforms">
-              <el-icon><Connection /></el-icon><span>渠道设置</span>
-            </el-menu-item>
+
             <el-menu-item index="/channel/shops">
               <el-icon><Shop /></el-icon><span>店铺管理</span>
             </el-menu-item>
             <el-menu-item index="/channel/merchants">
               <el-icon><OfficeBuilding /></el-icon><span>商户管理</span>
-            </el-menu-item>
+            </el-menu-item>            
           </el-menu>
         </el-aside>
         <el-main class="ch-main"><router-view /></el-main>
@@ -27,7 +25,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Connection, Shop, OfficeBuilding } from '@element-plus/icons-vue'
+import { Shop, OfficeBuilding } from '@element-plus/icons-vue'
 const route = useRoute()
 const activeMenu = computed(() => route.path)
 </script>

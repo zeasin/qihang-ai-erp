@@ -39,12 +39,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
+import { api } from '../../utils/api'
 const list = ref<any[]>([]); const saving = ref(false)
 const dlg = reactive({ visible:false, isNew:true, form:{configId:null, configName:'', configKey:'', configValue:'', configType:'N', remark:''} })
-async function fetch() { const r:any = await request.get('/sys-api/system/config/list'); list.value = r.data || [] }
+async function fetch() { const r:any = await request.get(api.configList); list.value = r.data || [] }
 function showDialog(row:any) { dlg.isNew=!row; dlg.form=row?{...row}:{configId:null, configName:'', configKey:'', configValue:'', configType:'N', remark:''}; dlg.visible=true }
-async function save() { saving.value=true; try { await request.post('/sys-api/system/config/save', dlg.form); ElMessage.success(dlg.isNew?'已创建':'已更新'); dlg.visible=false; await fetch() } catch(e:any) { ElMessage.error(e.message) } finally { saving.value=false } }
-async function deleteRow(row:any) { try { await ElMessageBox.confirm('确定删除？','确认'); await request.delete(`/sys-api/system/config/${row.configId}`); ElMessage.success('已删除'); await fetch() } catch {} }
+async function save() { saving.value=true; try { await request.post(api.configSave, dlg.form); ElMessage.success(dlg.isNew?'已创建':'已更新'); dlg.visible=false; await fetch() } catch(e:any) { ElMessage.error(e.message) } finally { saving.value=false } }
+async function deleteRow(row:any) { try { await ElMessageBox.confirm('确定删除？','确认'); await request.delete(api.configDelete(row.configId)); ElMessage.success('已删除'); await fetch() } catch {} }
 onMounted(fetch)
 </script>
 <style scoped>

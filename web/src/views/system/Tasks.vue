@@ -40,11 +40,12 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import request from '../../utils/request'
+import { api } from '../../utils/api'
 const list = ref<any[]>([]); const saving = ref(false)
 const dlg = reactive({ visible:false, form:{id:null, taskName:'', cron:'', method:'', remark:''} })
-async function fetch() { const r:any = await request.get('/sys-api/system/task/list'); list.value = r.data || [] }
+async function fetch() { const r:any = await request.get(api.taskList); list.value = r.data || [] }
 function showDialog(row:any) { dlg.form={...row}; dlg.visible=true }
-async function save() { saving.value=true; try { await request.put('/sys-api/system/task', dlg.form); ElMessage.success('已更新'); dlg.visible=false; await fetch() } catch(e:any) { ElMessage.error(e.message) } finally { saving.value=false } }
+async function save() { saving.value=true; try { await request.put(api.taskUpdate, dlg.form); ElMessage.success('已更新'); dlg.visible=false; await fetch() } catch(e:any) { ElMessage.error(e.message) } finally { saving.value=false } }
 onMounted(fetch)
 </script>
 <style scoped>

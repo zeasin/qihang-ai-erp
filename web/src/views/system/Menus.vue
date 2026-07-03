@@ -68,6 +68,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
+import { api } from '../../utils/api'
 
 const menus = ref<any[]>([])
 const saving = ref(false)
@@ -87,7 +88,7 @@ const menuTree = computed(() => menus.value)
 
 async function fetchMenus() {
   try {
-    const res: any = await request.get('/sys-api/system/menu/tree')
+    const res: any = await request.get(api.menuTree)
     menus.value = res.data || []
   } catch {}
 }
@@ -106,7 +107,7 @@ function showDialog(row: any, parentId?: number) {
 async function saveMenu() {
   saving.value = true
   try {
-    await request.post('/sys-api/system/menu/save', dialog.form)
+    await request.post(api.menuSave, dialog.form)
     ElMessage.success(dialog.isNew ? '菜单已创建' : '菜单已更新')
     dialog.visible = false
     await fetchMenus()
@@ -120,7 +121,7 @@ async function saveMenu() {
 async function deleteMenu(row: any) {
   try {
     await ElMessageBox.confirm(`确定删除菜单「${row.menuName}」？`, '确认')
-    await request.delete(`/sys-api/system/menu/${row.menuId}`)
+    await request.delete(api.menuDelete(row.menuId))
     ElMessage.success('菜单已删除')
     await fetchMenus()
   } catch {}

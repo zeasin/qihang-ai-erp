@@ -112,6 +112,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
+import { api } from '../../utils/api'
 
 const roles = ref<any[]>([])
 const menuTree = ref<any[]>([])
@@ -148,9 +149,9 @@ function userCountByRole(roleId: number) {
 
 async function fetchData() {
   const [r, m, u] = await Promise.all([
-    request.get('/sys-api/system/role/list'),
-    request.get('/sys-api/system/menu/tree'),
-    request.get('/sys-api/system/user/list'),
+    request.get(api.roleList),
+    request.get(api.menuTree),
+    request.get(api.userList),
   ])
   roles.value = (r as any).data || []
   menuTree.value = (m as any).data || []
@@ -171,7 +172,7 @@ function showRoleDialog(row: any) {
 async function saveRole() {
   saving.value = true
   try {
-    await request.post('/sys-api/system/role/save', roleDialog.form)
+    await request.post(api.roleSave, roleDialog.form)
     ElMessage.success(roleDialog.isNew ? '角色已创建' : '角色已更新')
     roleDialog.visible = false
     await fetchData()
@@ -185,7 +186,7 @@ async function saveRole() {
 async function deleteRole(row: any) {
   try {
     await ElMessageBox.confirm(`确定删除角色「${row.roleName}」？`, '确认')
-    await request.delete(`/sys-api/system/role/${row.roleId}`)
+    await request.delete(api.roleDelete(row.roleId))
     ElMessage.success('角色已删除')
     await fetchData()
   } catch {}
@@ -197,7 +198,7 @@ async function showPermissionDialog(row: any) {
   permDialog.visible = true
   // 等待树渲染，再设置勾选
   await new Promise(r => setTimeout(r, 100))
-  const res: any = await request.get(`/sys-api/system/role/${row.roleId}/menus`)
+  const res: any = await request.get(api.roleMenus(row.roleId))
   const checkedIds = res.data || []
   if (menuTreeRef.value) {
     menuTreeRef.value.setCheckedKeys(checkedIds)
@@ -210,7 +211,7 @@ async function savePermissions() {
   try {
     const checkedIds = menuTreeRef.value?.getCheckedKeys() || []
     const halfIds = menuTreeRef.value?.getHalfCheckedKeys() || []
-    await request.put(`/sys-api/system/role/${permDialog.roleId}/menus`, [...checkedIds, ...halfIds])
+    await request.put(api.roleUpdateMenus(permDialog.roleId), [...checkedIds, ...halfIds])
     ElMessage.success('权限已更新')
     permDialog.visible = false
   } catch (e: any) {
@@ -231,7 +232,7 @@ async function saveUserRoles() {
   if (!userRoleDialog.userId) return
   saving.value = true
   try {
-    await request.put(`/sys-api/system/user/${userRoleDialog.userId}/roles`, userRoleDialog.selectedRoles)
+    await request.put(api.userRoles(userRoleDialog.userId), userRoleDialog.selectedRoles)
     ElMessage.success('用户角色已更新')
     userRoleDialog.visible = false
     await fetchData()

@@ -1,4 +1,4 @@
-package cn.qihangerp.api.controller.channel;
+package cn.qihangerp.api.controller.sys;
 ;
 import cn.qihangerp.common.AjaxResult;
 import cn.qihangerp.model.OShopPlatform;
@@ -7,7 +7,7 @@ import cn.qihangerp.service.ShopPlatformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 @RestController
-@RequestMapping("/api/sys-api/channel/platform")
+@RequestMapping("/api/sys-api/system/platform")
 public class PlatformController {
     @Autowired private ShopPlatformService service;
     private boolean notAdmin() {

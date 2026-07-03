@@ -1,6 +1,6 @@
 <template>
   <div class="page-card">
-    <div class="page-header"><h3>📡 渠道设置</h3><el-button type="primary" size="small" @click="showDialog(null)">新增渠道</el-button></div>
+    <div class="page-header"><h3>📡 电商平台设置</h3><el-button type="primary" size="small" @click="showDialog(null)">新增渠道</el-button></div>
     <el-table :data="list" stripe size="small">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="name" label="平台名称" min-width="140" />
@@ -43,12 +43,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
+import { api } from '../../utils/api'
 const list = ref<any[]>([]); const saving = ref(false)
 const dlg = reactive({ visible:false, isNew:true, form:{id:null, name:'', code:'', appKey:'', appSecret:'', redirectUri:'', serverUrl:'', sort:0, status:0} })
-async function fetch() { const r:any = await request.get('/sys-api/channel/platform/list'); list.value = r.data || [] }
+async function fetch() { const r:any = await request.get(api.platformList); list.value = r.data || [] }
 function showDialog(row:any) { dlg.isNew=!row; dlg.form=row?{...row}:{id:null, name:'', code:'', appKey:'', appSecret:'', redirectUri:'', serverUrl:'', sort:0, status:0}; dlg.visible=true }
-async function save() { saving.value=true; try { await request.post('/sys-api/channel/platform/save', dlg.form); ElMessage.success(dlg.isNew?'已创建':'已更新'); dlg.visible=false; await fetch() } catch(e:any) { ElMessage.error(e.message) } finally { saving.value=false } }
-async function deleteRow(row:any) { try { await ElMessageBox.confirm('确定删除？','确认'); await request.delete(`/sys-api/channel/platform/${row.id}`); ElMessage.success('已删除'); await fetch() } catch {} }
+async function save() { saving.value=true; try { await request.post(api.platformSave, dlg.form); ElMessage.success(dlg.isNew?'已创建':'已更新'); dlg.visible=false; await fetch() } catch(e:any) { ElMessage.error(e.message) } finally { saving.value=false } }
+async function deleteRow(row:any) { try { await ElMessageBox.confirm('确定删除？','确认'); await request.delete(api.platformDelete(row.id)); ElMessage.success('已删除'); await fetch() } catch {} }
 onMounted(fetch)
 </script>
 <style scoped>

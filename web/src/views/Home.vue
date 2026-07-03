@@ -27,7 +27,7 @@
                   <div style="width:100%" @click="$router.push('/system/menus')">⚙️ 系统管理</div>
                 </el-dropdown-item>
                 <el-dropdown-item v-if="isAdmin()">
-                  <div style="width:100%" @click="$router.push('/channel/platforms')">📡 渠道管理</div>
+                  <div style="width:100%" @click="$router.push('/channel/shops')">📡 渠道管理</div>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
@@ -72,8 +72,8 @@
           </div>
 
           <!-- ─── 系统管理入口 ─── -->
-          <div class="section-label" v-if="hasPerm('system:manage')">⚙️ 系统管理</div>
-          <div class="workspace-grid" v-if="hasPerm('system:manage')">
+          <div class="section-label" v-if="hasPerm('system:manage') || isAdmin()">⚙️ 系统管理</div>
+          <div class="workspace-grid" v-if="hasPerm('system:manage') || isAdmin()">
             <div v-for="m in sysMenus" :key="m.menuId"
               class="ws-card" @click="goMenu(m)">
               <div class="ws-icon">{{ m.icon || '⚙️' }}</div>
@@ -88,9 +88,6 @@
           <!-- ─── 渠道管理入口 ─── -->
           <div class="section-label" v-if="hasPerm('channel:manage') || isAdmin()">📡 渠道管理</div>
           <div class="workspace-grid" v-if="hasPerm('channel:manage') || isAdmin()">
-            <div class="ws-card" @click="$router.push('/channel/platforms')">
-              <div class="ws-icon">📡</div><div class="ws-info"><div class="ws-name">渠道设置</div><div class="ws-desc">电商平台配置</div></div>
-            </div>
             <div class="ws-card" @click="$router.push('/channel/shops')">
               <div class="ws-icon">🏪</div><div class="ws-info"><div class="ws-name">店铺管理</div><div class="ws-desc">管理平台店铺</div></div>
             </div>
@@ -124,6 +121,7 @@ import { ElMessage } from 'element-plus'
 import { Search, ArrowDown, ArrowRight } from '@element-plus/icons-vue'
 import { useAuthStore } from '../stores/auth'
 import request from '../utils/request'
+import { api } from '../utils/api'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -204,7 +202,7 @@ async function handleLogout() {
 onMounted(async () => {
   if (authStore.isLoggedIn) {
     try {
-      const res: any = await request.get('/sys-api/system/menu/tree')
+      const res: any = await request.get(api.menuTree)
       menus.value = res.data || []
       // 扁平化
       const flat: any[] = []

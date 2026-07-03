@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import request from '../utils/request'
+import { api } from '../utils/api'
 
 export interface UserInfo {
   userId: number
@@ -51,7 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 登录
   async function login(username: string, password: string, code?: string, uuid?: string) {
-    const res: any = await request.post('/sys-api/login', {
+    const res: any = await request.post(api.login, {
       username,
       password,
       code: code || '',
@@ -67,7 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 获取用户信息
   async function fetchUserInfo() {
-    const res: any = await request.get('/sys-api/getInfo')
+    const res: any = await request.get(api.getInfo)
     user.value = res.user
     roles.value = res.roles || []
     permissions.value = res.permissions || []
@@ -77,7 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
   // 退出登录
   async function logout() {
     try {
-      await request.post('/sys-api/logout')
+      await request.post(api.logout)
     } catch {
       // 忽略退出异常
     }

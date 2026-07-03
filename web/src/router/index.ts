@@ -84,14 +84,10 @@ const routes: RouteRecordRaw[] = [
   // ─── 渠道管理 ───
   {
     path: '/channel',
+    redirect: '/channel/shops',
     component: () => import('../views/channel/ChannelLayout.vue'),
     meta: { requiresAuth: true, roles: ['admin'] },
     children: [
-      {
-        path: 'platforms',
-        name: 'channel-platforms',
-        component: () => import('../views/channel/Platforms.vue'),
-      },
       {
         path: 'shops',
         name: 'channel-shops',
@@ -130,6 +126,11 @@ const routes: RouteRecordRaw[] = [
         name: 'system-dicts',
         component: () => import('../views/system/Dicts.vue'),
       },      {
+        path: 'platforms',
+        name: 'system-platforms',
+        component: () => import('../views/system/Platforms.vue'),
+      },
+      {
         path: 'configs',
         name: 'system-configs',
         component: () => import('../views/system/Configs.vue'),
