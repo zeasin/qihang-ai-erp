@@ -1,4 +1,4 @@
 package cn.qihangerp.mapper;
-import cn.qihangerp.model.ShopPlatform;
+import cn.qihangerp.model.OShopPlatform;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-public interface ShopPlatformMapper extends BaseMapper<ShopPlatform> {}
+public interface ShopPlatformMapper extends BaseMapper<OShopPlatform> {}
