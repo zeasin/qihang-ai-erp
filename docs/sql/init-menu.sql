@@ -82,8 +82,6 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 商品主数据
 (100, '商品分类管理',  26, 1,  '/basic/category',    'basic/Category',      'basic:category:manage',   '🏷️', 'C'),
 (101, '商品品牌管理',  26, 2,  '/basic/brand',       'basic/Brand',         'basic:brand:manage',      '✨', 'C'),
-(102, '分类规格属性',  26, 3,  '/basic/attribute',   'basic/Attribute',     'basic:attribute:manage',  '📐', 'C'),
-(103, '规格属性值',    26, 4,  '/basic/attribute-value', 'basic/AttributeValue','basic:attributeValue:manage', '📏', 'C'),
 
 -- 供应商主数据
 (104, '供应商档案',    26, 10, '/basic/supplier',    'basic/Supplier',      'basic:supplier:manage',   '🤝', 'C'),

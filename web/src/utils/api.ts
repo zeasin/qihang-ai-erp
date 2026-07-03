@@ -61,4 +61,10 @@ export const api = {
   brandList: '/sys-api/basic/brand/list',
   brandSave: '/sys-api/basic/brand/save',
   brandDelete: (id: number) => `/sys-api/basic/brand/${id}`,
+  categoryAttrList: '/sys-api/basic/category/attribute/list',
+  categoryAttrSave: '/sys-api/basic/category/attribute/save',
+  categoryAttrDelete: (id: number) => `/sys-api/basic/category/attribute/${id}`,
+  categoryAttrValueList: '/sys-api/basic/category/attribute/value/list',
+  categoryAttrValueSave: '/sys-api/basic/category/attribute/value/save',
+  categoryAttrValueDelete: (id: number) => `/sys-api/basic/category/attribute/value/${id}`,
 }

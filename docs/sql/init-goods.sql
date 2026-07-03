@@ -23,34 +23,76 @@ INSERT INTO o_goods_brand (id, name, num, status, create_by) VALUES
 
 SELECT setval('o_goods_brand_id_seq', (SELECT MAX(id) FROM o_goods_brand));
 
-
 -- ====================================================================
 -- 基础数据：商品分类
 -- ====================================================================
+DROP TABLE IF EXISTS o_goods_category_attribute_value;
+DROP TABLE IF EXISTS o_goods_category_attribute;
 DROP TABLE IF EXISTS o_goods_category;
+
 CREATE TABLE o_goods_category (
-                                  id BIGSERIAL PRIMARY KEY,
-                                  number VARCHAR(18),
-                                  name VARCHAR(20) NOT NULL,
-                                  remark VARCHAR(50),
-                                  parent_id BIGINT DEFAULT 0,
-                                  path VARCHAR(45) DEFAULT '',
-                                  sort INT DEFAULT 0,
-                                  image VARCHAR(100),
-                                  is_delete SMALLINT DEFAULT 0,
-                                  create_by VARCHAR(25),
-                                  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  update_by VARCHAR(25),
-                                  update_time TIMESTAMP,
-                                  merchant_id BIGINT DEFAULT 0
+    id BIGSERIAL PRIMARY KEY,
+    number VARCHAR(18),
+    name VARCHAR(20) NOT NULL,
+    remark VARCHAR(50),
+    parent_id BIGINT DEFAULT 0,
+    path VARCHAR(45) DEFAULT '',
+    sort INT DEFAULT 0,
+    image VARCHAR(100),
+    is_delete SMALLINT DEFAULT 0,
+    create_by VARCHAR(25),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_by VARCHAR(25),
+    update_time TIMESTAMP,
+    merchant_id BIGINT DEFAULT 0
 );
 
--- 初始数据
 INSERT INTO o_goods_category (id, number, name, parent_id, sort, create_by) VALUES
-                                                                                (1, 'ZM', '照明', 0, 0, 'admin'),
-                                                                                (2, 'LEDDX', 'LED灯芯', 1, 0, 'admin'),
-                                                                                (3, 'LEDDP', 'LED灯泡', 1, 1, 'admin'),
-                                                                                (4, 'SHOUSHI', '首饰', 0, 0, 'admin'),
-                                                                                (5, 'SS001', '手镯金包银', 4, 0, 'admin');
+(1, 'ZM', '照明', 0, 0, 'admin'),
+(2, 'LEDDX', 'LED灯芯', 1, 0, 'admin'),
+(3, 'LEDDP', 'LED灯泡', 1, 1, 'admin'),
+(4, 'SHOUSHI', '首饰', 0, 0, 'admin'),
+(5, 'SS001', '手镯金包银', 4, 0, 'admin');
 
 SELECT setval('o_goods_category_id_seq', (SELECT MAX(id) FROM o_goods_category));
+
+-- ====================================================================
+-- 分类规格属性
+-- ====================================================================
+DROP TABLE IF EXISTS o_goods_category_attribute;
+CREATE TABLE o_goods_category_attribute (
+    id BIGSERIAL PRIMARY KEY,
+    category_id BIGINT NOT NULL,
+    type INT DEFAULT 0,
+    title VARCHAR(45),
+    code VARCHAR(10)
+);
+
+INSERT INTO o_goods_category_attribute (id, category_id, type, title, code) VALUES
+(1, 1, 1, '瓦数', 'color'),
+(2, 4, 1, '颜色', 'color');
+
+SELECT setval('o_goods_category_attribute_id_seq', (SELECT MAX(id) FROM o_goods_category_attribute));
+
+-- ====================================================================
+-- 规格属性值
+-- ====================================================================
+DROP TABLE IF EXISTS o_goods_category_attribute_value;
+CREATE TABLE o_goods_category_attribute_value (
+    id BIGSERIAL PRIMARY KEY,
+    category_attribute_id BIGINT,
+    value VARCHAR(45),
+    sku_code VARCHAR(10),
+    order_num INT DEFAULT 0,
+    is_delete INT DEFAULT 0
+);
+
+INSERT INTO o_goods_category_attribute_value (id, category_attribute_id, value, sku_code, order_num, is_delete) VALUES
+(1, 1, '15W', '15W', 0, 0),
+(2, 1, '18W', '18W', 0, 0),
+(3, 1, '24W', '24W', 0, 0),
+(4, 1, '36W', '36W', 0, 0),
+(5, 1, '72W', '72W', 0, 0),
+(6, 2, '默认', '00', 0, 0);
+
+SELECT setval('o_goods_category_attribute_value_id_seq', (SELECT MAX(id) FROM o_goods_category_attribute_value));
