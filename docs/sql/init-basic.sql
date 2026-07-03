@@ -83,5 +83,35 @@ INSERT INTO erp_merchant (id, login_name, name, number, status) VALUES
 (1, 'qihang', '启航', 'QIHANG', '0'),
 (2, 'pdd74583921645', '拼多多商户', '745839216', '0');
 
+-- ====================================================================
+-- 基础数据：商品分类
+-- ====================================================================
+DROP TABLE IF EXISTS o_goods_category;
+CREATE TABLE o_goods_category (
+    id BIGSERIAL PRIMARY KEY,
+    number VARCHAR(18),
+    name VARCHAR(20) NOT NULL,
+    remark VARCHAR(50),
+    parent_id BIGINT DEFAULT 0,
+    path VARCHAR(45) DEFAULT '',
+    sort INT DEFAULT 0,
+    image VARCHAR(100),
+    is_delete SMALLINT DEFAULT 0,
+    create_by VARCHAR(25),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_by VARCHAR(25),
+    update_time TIMESTAMP,
+    merchant_id BIGINT DEFAULT 0
+);
+
+-- 初始数据
+INSERT INTO o_goods_category (id, number, name, parent_id, sort, create_by) VALUES
+(1, 'ZM', '照明', 0, 0, 'admin'),
+(2, 'LEDDX', 'LED灯芯', 1, 0, 'admin'),
+(3, 'LEDDP', 'LED灯泡', 1, 1, 'admin'),
+(4, 'SHOUSHI', '首饰', 0, 0, 'admin'),
+(5, 'SS001', '手镯金包银', 4, 0, 'admin');
+
+SELECT setval('o_goods_category_id_seq', (SELECT MAX(id) FROM o_goods_category));
 SELECT setval('o_shop_platform_id_seq', (SELECT MAX(id) FROM o_shop_platform));
 SELECT setval('erp_merchant_id_seq', (SELECT MAX(id) FROM erp_merchant));

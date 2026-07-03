@@ -53,4 +53,9 @@ export const api = {
   merchantList: '/sys-api/channel/merchant/list',
   merchantSave: '/sys-api/channel/merchant/save',
   merchantDelete: (id: number) => `/sys-api/channel/merchant/${id}`,
+
+  // 基础数据
+  categoryList: '/sys-api/basic/category/list',
+  categorySave: '/sys-api/basic/category/save',
+  categoryDelete: (id: number) => `/sys-api/basic/category/${id}`,
 }
