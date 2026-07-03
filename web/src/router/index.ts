@@ -107,6 +107,11 @@ const routes: RouteRecordRaw[] = [
         name: 'system-dicts',
         component: () => import('../views/system/Dicts.vue'),
       },      {
+        path: 'platforms',
+        name: 'system-platforms',
+        component: () => import('../views/system/Platforms.vue'),
+      },
+      {
         path: 'configs',
         name: 'system-configs',
         component: () => import('../views/system/Configs.vue'),
