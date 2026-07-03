@@ -90,10 +90,6 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 仓库主数据
 (106, '仓库管理',      26, 20, '/basic/warehouse',   'basic/Warehouse',     'basic:warehouse:manage',  '🏬', 'C'),
 
--- 物流主数据
-(109, '电子面单设置',  26, 30, '/basic/ewaybill',    'basic/Ewaybill',      'basic:ewaybill:manage',   '📄', 'C'),
-(110, '发货快递设置',  26, 31, '/basic/logistics',   'basic/Logistics',     'basic:logistics:manage',  '📮', 'C'),
-
 -- 系统基础数据
 (111, '国家地区设置',  26, 40, '/basic/region',      'basic/Region',        'basic:region:manage',     '🌍', 'C'),
 (112, '快递公司库',    26, 41, '/basic/logistics-company','basic/LogisticsCompany','basic:logisticsCompany:manage', '📮', 'C'),

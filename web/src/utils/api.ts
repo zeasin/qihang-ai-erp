@@ -73,4 +73,7 @@ export const api = {
   carrierList: '/sys-api/basic/carrier/list',
   carrierSave: '/sys-api/basic/carrier/save',
   carrierDelete: (id: number) => `/sys-api/basic/carrier/${id}`,
+  warehouseList: '/sys-api/basic/warehouse/list',
+  warehouseSave: '/sys-api/basic/warehouse/save',
+  warehouseDelete: (id: number) => `/sys-api/basic/warehouse/${id}`,
 }
