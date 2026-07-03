@@ -23,8 +23,11 @@
                     {{ authStore.roles.map(r => r.roleName).join(' / ') }}
                   </div>
                 </el-dropdown-item>
-                <el-dropdown-item v-if="hasPerm('system:manage')" divided>
+                <el-dropdown-item v-if="isAdmin()" divided>
                   <div style="width:100%" @click="$router.push('/system/menus')">⚙️ 系统管理</div>
+                </el-dropdown-item>
+                <el-dropdown-item v-if="isAdmin()">
+                  <div style="width:100%" @click="$router.push('/channel/platforms')">📡 渠道管理</div>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
@@ -83,8 +86,8 @@
           </div>
 
           <!-- ─── 渠道管理入口 ─── -->
-          <div class="section-label" v-if="hasPerm('system:manage')">📡 渠道管理</div>
-          <div class="workspace-grid" v-if="hasPerm('system:manage')">
+          <div class="section-label" v-if="hasPerm('channel:manage') || isAdmin()">📡 渠道管理</div>
+          <div class="workspace-grid" v-if="hasPerm('channel:manage') || isAdmin()">
             <div class="ws-card" @click="$router.push('/channel/platforms')">
               <div class="ws-icon">📡</div><div class="ws-info"><div class="ws-name">渠道设置</div><div class="ws-desc">电商平台配置</div></div>
             </div>
@@ -146,8 +149,12 @@ const sysMenus = computed(() =>
   )
 )
 
+function isAdmin() {
+  return authStore.roles.some(r => r.roleKey === 'admin')
+}
+
 function hasPerm(perm: string) {
-  return userPerms.value.includes(perm) || userPerms.value.includes('*:*:*')
+  return userPerms.value.includes(perm) || userPerms.value.includes('*:*:*') || isAdmin()
 }
 
 function goMenu(m: any) {

@@ -121,11 +121,19 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (13, '系统管理',     0, 99, null,                 null,               'system:manage',          '⚙️', 'M'),
 (14,   '角色管理',   13, 1,  '/system/roles',     'system/Roles',     'system:role:manage',     null, 'C'),
 (15,   '用户管理',   13, 2,  '/system/users',     'system/Users',     'system:user:manage',     null, 'C'),
-(16,   '字典管理',   13, 3,  '/system/dicts',     'system/Dicts',     'system:dict:manage',     null, 'C');
+(16,   '字典管理',   13, 3,  '/system/dicts',     'system/Dicts',     'system:dict:manage',     null, 'C'),
+-- 渠道管理菜单 (parent_id = 17)
+(17,   '渠道管理',     0, 3,  null,                  null,               'channel:manage',          '📡', 'M'),
+(18,   '渠道设置',    17, 1,  '/channel/platforms',  'channel/Platforms','channel:platform:view',    null, 'C'),
+(19,   '店铺管理',    17, 2,  '/channel/shops',      'channel/Shops',    'channel:shop:view',       null, 'C'),
+(20,   '商户管理',    17, 3,  '/channel/merchants',  'channel/Merchants','channel:merchant:view',   null, 'C');
 
 -- 超级管理员分配所有菜单
 INSERT INTO sys_role_menu (role_id, menu_id)
 SELECT 1, menu_id FROM sys_menu WHERE menu_id NOT IN (SELECT menu_id FROM sys_role_menu WHERE role_id = 1);
+
+-- 渠道管理分配给管理员
+INSERT INTO sys_role_menu (role_id, menu_id) VALUES (1, 17), (1, 18), (1, 19), (1, 20);
 
 -- 订单处理员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES
