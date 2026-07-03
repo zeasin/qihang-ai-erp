@@ -23,8 +23,8 @@
                     {{ authStore.roles.map(r => r.roleName).join(' / ') }}
                   </div>
                 </el-dropdown-item>
-                <el-dropdown-item v-if="hasPerm('system:manage')" divided @click="goSystem">
-                  ⚙️ 系统管理
+                <el-dropdown-item v-if="hasPerm('system:manage')" divided>
+                  <div style="width:100%" @click="$router.push('/system/menus')">⚙️ 系统管理</div>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>

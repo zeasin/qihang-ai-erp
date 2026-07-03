@@ -25,6 +25,18 @@
               <span>用户管理</span>
             </el-menu-item>
 
+            <el-menu-item index="/system/configs">
+              <el-icon><Setting /></el-icon>
+              <span>系统参数</span>
+            </el-menu-item>
+            <el-menu-item index="/system/tasks">
+              <el-icon><Time /></el-icon>
+              <span>定时任务</span>
+            </el-menu-item>
+            <el-menu-item index="/system/openAuth">
+              <el-icon><Key /></el-icon>
+              <span>接口授权</span>
+            </el-menu-item>
             <el-menu-item index="/system/dicts">
               <el-icon><Notebook /></el-icon>
               <span>字典管理</span>
@@ -42,7 +54,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Menu, UserFilled, Avatar, Notebook } from '@element-plus/icons-vue'
+import { Menu, UserFilled, Avatar, Notebook, Setting, Timer, Lock } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const activeMenu = computed(() => route.path)

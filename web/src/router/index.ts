@@ -106,7 +106,22 @@ const routes: RouteRecordRaw[] = [
         path: 'dicts',
         name: 'system-dicts',
         component: () => import('../views/system/Dicts.vue'),
+      },      {
+        path: 'configs',
+        name: 'system-configs',
+        component: () => import('../views/system/Configs.vue'),
       },
+      {
+        path: 'tasks',
+        name: 'system-tasks',
+        component: () => import('../views/system/Tasks.vue'),
+      },
+      {
+        path: 'openAuth',
+        name: 'system-openAuth',
+        component: () => import('../views/system/OpenAuth.vue'),
+      },
+
     ],
   },
 ]
