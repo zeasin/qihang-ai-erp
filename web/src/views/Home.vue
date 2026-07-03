@@ -82,6 +82,20 @@
             </div>
           </div>
 
+          <!-- ─── 渠道管理入口 ─── -->
+          <div class="section-label" v-if="hasPerm('system:manage')">📡 渠道管理</div>
+          <div class="workspace-grid" v-if="hasPerm('system:manage')">
+            <div class="ws-card" @click="$router.push('/channel/platforms')">
+              <div class="ws-icon">📡</div><div class="ws-info"><div class="ws-name">渠道设置</div><div class="ws-desc">电商平台配置</div></div>
+            </div>
+            <div class="ws-card" @click="$router.push('/channel/shops')">
+              <div class="ws-icon">🏪</div><div class="ws-info"><div class="ws-name">店铺管理</div><div class="ws-desc">管理平台店铺</div></div>
+            </div>
+            <div class="ws-card" @click="$router.push('/channel/merchants')">
+              <div class="ws-icon">🏢</div><div class="ws-info"><div class="ws-name">商户管理</div><div class="ws-desc">管理商户信息</div></div>
+            </div>
+          </div>
+
           <!-- ─── 快捷操作 ─── -->
           <div class="section-label" style="margin-top:24px">🔍 快捷操作</div>
           <div class="quick-actions">

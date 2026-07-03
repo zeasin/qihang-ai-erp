@@ -81,6 +81,29 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // ─── 渠道管理 ───
+  {
+    path: '/channel',
+    component: () => import('../views/channel/ChannelLayout.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] },
+    children: [
+      {
+        path: 'platforms',
+        name: 'channel-platforms',
+        component: () => import('../views/channel/Platforms.vue'),
+      },
+      {
+        path: 'shops',
+        name: 'channel-shops',
+        component: () => import('../views/channel/Shops.vue'),
+      },
+      {
+        path: 'merchants',
+        name: 'channel-merchants',
+        component: () => import('../views/channel/Merchants.vue'),
+      },
+    ],
+  },
   // ─── 系统管理（含侧边栏布局） ───
   {
     path: '/system',
@@ -107,11 +130,6 @@ const routes: RouteRecordRaw[] = [
         name: 'system-dicts',
         component: () => import('../views/system/Dicts.vue'),
       },      {
-        path: 'platforms',
-        name: 'system-platforms',
-        component: () => import('../views/system/Platforms.vue'),
-      },
-      {
         path: 'configs',
         name: 'system-configs',
         component: () => import('../views/system/Configs.vue'),
