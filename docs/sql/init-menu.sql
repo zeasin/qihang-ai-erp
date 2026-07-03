@@ -46,9 +46,9 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- ====================================================================
 (1,  '智能看板',       0, 1,  '/dashboard',          'Dashboard',           'dashboard:view',         '📊', 'C'),
 (2,  '订单工作台',     0, 2,  '/workspace/order',    'workspace/Order',     'workspace:order:view',   '📋', 'C'),
-(3,    '审核订单',     2, 1,  null,                  null,                  'workspace:order:audit',  null, 'F'),
-(4,    '打印面单',     2, 2,  null,                  null,                  'workspace:order:print',  null, 'F'),
-(5,    '推送仓库',     2, 3,  null,                  null,                  'workspace:order:push',   null, 'F'),
+(3,    '审核订单',     2, 1,  null,                  null,                  'workspace:order:audit',  '✅', 'F'),
+(4,    '打印面单',     2, 2,  null,                  null,                  'workspace:order:print',  '🖨️', 'F'),
+(5,    '推送仓库',     2, 3,  null,                  null,                  'workspace:order:push',   '📤', 'F'),
 (6,  '拣货工作台',     0, 3,  '/workspace/picking',  'workspace/Picking',   'workspace:picking:view', '🔍', 'C'),
 (7,  '打包工作台',     0, 4,  '/workspace/packing',  'workspace/Packing',   'workspace:packing:view', '📦', 'C'),
 (8,  '发货工作台',     0, 5,  '/workspace/shipping', 'workspace/Shipping',  'workspace:shipping:view','🚚', 'C'),
@@ -61,17 +61,17 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 仅保留运维管理类功能
 -- ====================================================================
 (13, '系统管理',       0, 99, null,                 null,                  'system:manage',           '⚙️', 'M'),
-(14,   '角色管理',     13, 1,  '/system/roles',     'system/Roles',        'system:role:manage',      null, 'C'),
-(15,   '用户管理',     13, 2,  '/system/users',     'system/Users',        'system:user:manage',      null, 'C'),
+(14,   '角色管理',     13, 1,  '/system/roles',     'system/Roles',        'system:role:manage',      '👥', 'C'),
+(15,   '用户管理',     13, 2,  '/system/users',     'system/Users',        'system:user:manage',      '👤', 'C'),
 
-(21,   '电商平台设置',  26, 5,  '/system/platforms', 'system/Platforms',    'system:platform:manage',  null, 'C'),
-(22,   '系统参数',     13, 5,  '/system/configs',   'system/Configs',      'system:config:manage',    null, 'C'),
-(23,   '定时任务',     13, 6,  '/system/tasks',     'system/Tasks',        'system:task:manage',      null, 'C'),
-(24,   '接口授权',     13, 7,  '/system/openAuth',  'system/OpenAuth',     'system:openAuth:manage',  null, 'C'),
+(21,   '电商平台设置',  26, 5,  '/system/platforms', 'system/Platforms',    'system:platform:manage',  '🛒', 'C'),
+(22,   '系统参数',     13, 5,  '/system/configs',   'system/Configs',      'system:config:manage',    '🔧', 'C'),
+(23,   '定时任务',     13, 6,  '/system/tasks',     'system/Tasks',        'system:task:manage',      '⏰', 'C'),
+(24,   '接口授权',     13, 7,  '/system/openAuth',  'system/OpenAuth',     'system:openAuth:manage',  '🔑', 'C'),
 -- ====================================================================
 -- ====================================================================
-(19,   '店铺管理',     26, 6,  '/channel/shops',     'channel/Shops',       'channel:shop:view',       null, 'C'),
-(20,   '商户管理',     26, 7,  '/channel/merchants', 'channel/Merchants',   'channel:merchant:view',   null, 'C'),
+(19,   '店铺管理',     26, 6,  '/channel/shops',     'channel/Shops',       'channel:shop:view',       '🏪', 'C'),
+(20,   '商户管理',     26, 7,  '/channel/merchants', 'channel/Merchants',   'channel:merchant:view',   '🏢', 'C'),
 
 -- ====================================================================
 -- 一级：基础数据 (menu_id=26, M=目录)
@@ -80,28 +80,28 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (26, '基础数据',       0, 50, null,                 null,                  'basic:data:manage',       '🗂️', 'M'),
 
 -- 商品主数据
-(100, '商品分类管理',  26, 1,  '/basic/category',    'basic/Category',      'basic:category:manage',   null, 'C'),
-(101, '商品品牌管理',  26, 2,  '/basic/brand',       'basic/Brand',         'basic:brand:manage',      null, 'C'),
-(102, '分类规格属性',  26, 3,  '/basic/attribute',   'basic/Attribute',     'basic:attribute:manage',  null, 'C'),
-(103, '规格属性值',    26, 4,  '/basic/attribute-value', 'basic/AttributeValue','basic:attributeValue:manage', null, 'C'),
+(100, '商品分类管理',  26, 1,  '/basic/category',    'basic/Category',      'basic:category:manage',   '🏷️', 'C'),
+(101, '商品品牌管理',  26, 2,  '/basic/brand',       'basic/Brand',         'basic:brand:manage',      '✨', 'C'),
+(102, '分类规格属性',  26, 3,  '/basic/attribute',   'basic/Attribute',     'basic:attribute:manage',  '📐', 'C'),
+(103, '规格属性值',    26, 4,  '/basic/attribute-value', 'basic/AttributeValue','basic:attributeValue:manage', '📏', 'C'),
 
 -- 供应商主数据
-(104, '供应商档案',    26, 10, '/basic/supplier',    'basic/Supplier',      'basic:supplier:manage',   null, 'C'),
-(105, '采购承运商',    26, 11, '/basic/carrier',     'basic/Carrier',       'basic:carrier:manage',    null, 'C'),
+(104, '供应商档案',    26, 10, '/basic/supplier',    'basic/Supplier',      'basic:supplier:manage',   '🤝', 'C'),
+(105, '采购承运商',    26, 11, '/basic/carrier',     'basic/Carrier',       'basic:carrier:manage',    '🚛', 'C'),
 
 -- 仓库主数据
-(106, '仓库管理',      26, 20, '/basic/warehouse',   'basic/Warehouse',     'basic:warehouse:manage',  null, 'C'),
+(106, '仓库管理',      26, 20, '/basic/warehouse',   'basic/Warehouse',     'basic:warehouse:manage',  '🏬', 'C'),
 
 -- 物流主数据
-(109, '电子面单设置',  26, 30, '/basic/ewaybill',    'basic/Ewaybill',      'basic:ewaybill:manage',   null, 'C'),
-(110, '发货快递设置',  26, 31, '/basic/logistics',   'basic/Logistics',     'basic:logistics:manage',  null, 'C'),
+(109, '电子面单设置',  26, 30, '/basic/ewaybill',    'basic/Ewaybill',      'basic:ewaybill:manage',   '📄', 'C'),
+(110, '发货快递设置',  26, 31, '/basic/logistics',   'basic/Logistics',     'basic:logistics:manage',  '📮', 'C'),
 
 -- 系统基础数据
-(111, '国家地区设置',  26, 40, '/basic/region',      'basic/Region',        'basic:region:manage',     null, 'C'),
-(112, '快递公司库',    26, 41, '/basic/logistics-company','basic/LogisticsCompany','basic:logisticsCompany:manage', null, 'C'),
-(114, '字典管理',      26, 50, '/basic/dict',        'basic/Dict',          'basic:dict:manage',       null, 'C'),
+(111, '国家地区设置',  26, 40, '/basic/region',      'basic/Region',        'basic:region:manage',     '🌍', 'C'),
+(112, '快递公司库',    26, 41, '/basic/logistics-company','basic/LogisticsCompany','basic:logisticsCompany:manage', '📮', 'C'),
+(114, '字典管理',      26, 50, '/basic/dict',        'basic/Dict',          'basic:dict:manage',       '📖', 'C'),
 
-(116,   '菜单管理',    13, 3,  '/system/menus',     'system/Menus',        'system:menu:manage',      null, 'C');
+(116,   '菜单管理',    13, 3,  '/system/menus',     'system/Menus',        'system:menu:manage',      '📋', 'C');
 
 -- ====================================================================
 -- 角色-菜单分配

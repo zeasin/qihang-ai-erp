@@ -27,7 +27,7 @@
                   <div style="width:100%" @click="$router.push('/system/menus')">⚙️ 系统管理</div>
                 </el-dropdown-item>
                 <el-dropdown-item v-if="isAdmin()">
-                  <div style="width:100%" @click="$router.push('/channel/shops')">📡 渠道管理</div>
+                  <div style="width:100%" @click="$router.push('/channel/shops')">📡 基础数据</div>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
@@ -85,14 +85,17 @@
             </div>
           </div>
 
-          <!-- ─── 渠道管理入口 ─── -->
-          <div class="section-label" v-if="hasPerm('channel:manage') || isAdmin()">📡 渠道管理</div>
-          <div class="workspace-grid" v-if="hasPerm('channel:manage') || isAdmin()">
-            <div class="ws-card" @click="$router.push('/channel/shops')">
-              <div class="ws-icon">🏪</div><div class="ws-info"><div class="ws-name">店铺管理</div><div class="ws-desc">管理平台店铺</div></div>
-            </div>
-            <div class="ws-card" @click="$router.push('/channel/merchants')">
-              <div class="ws-icon">🏢</div><div class="ws-info"><div class="ws-name">商户管理</div><div class="ws-desc">管理商户信息</div></div>
+          <!-- ─── 基础数据入口 ─── -->
+          <div class="section-label" v-if="hasPerm('basic:data:manage') || isAdmin()">📡 基础数据</div>
+          <div class="workspace-grid" v-if="hasPerm('basic:data:manage') || isAdmin()">
+            <div v-for="m in basicDataMenus" :key="m.menuId"
+              class="ws-card" @click="goMenu(m)">
+              <div class="ws-icon">{{ m.icon || '📄' }}</div>
+              <div class="ws-info">
+                <div class="ws-name">{{ m.menuName }}</div>
+                <div class="ws-desc">{{ m.perms }}</div>
+              </div>
+              <el-icon class="ws-arrow"><ArrowRight /></el-icon>
             </div>
           </div>
 
@@ -139,12 +142,18 @@ const workspaceMenus = computed(() =>
   )
 )
 
-// 系统管理子菜单
+// 系统管理子菜单 (parentId=13 的所有二级菜单)
 const sysMenus = computed(() =>
   menus.value.filter(m =>
-    m.menuType === 'C' && m.path &&
-    m.menuId >= 13
-  )
+    m.parentId === 13 && m.menuType === 'C' && m.path
+  ).sort((a, b) => (a.orderNum || 0) - (b.orderNum || 0))
+)
+
+// 基础数据子菜单 (parentId=26 的所有二级菜单)
+const basicDataMenus = computed(() =>
+  menus.value.filter(m =>
+    m.parentId === 26 && m.menuType === 'C' && m.path
+  ).sort((a, b) => (a.orderNum || 0) - (b.orderNum || 0))
 )
 
 function isAdmin() {
