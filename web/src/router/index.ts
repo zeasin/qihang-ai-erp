@@ -98,6 +98,11 @@ const routes: RouteRecordRaw[] = [
         name: 'basic-merchants',
         component: () => import('../views/basic/Merchants.vue'),
       },
+      {
+        path: 'platforms',
+        name: 'basic-platforms',
+        component: () => import('../views/basic/Platforms.vue'),
+      },
     ],
   },
   // ─── 系统管理（含侧边栏布局） ───
@@ -125,10 +130,6 @@ const routes: RouteRecordRaw[] = [
         path: 'dicts',
         name: 'system-dicts',
         component: () => import('../views/system/Dicts.vue'),
-      },      {
-        path: 'platforms',
-        name: 'system-platforms',
-        component: () => import('../views/system/Platforms.vue'),
       },
       {
         path: 'configs',

@@ -64,7 +64,7 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (14,   '角色管理',     13, 1,  '/system/roles',     'system/Roles',        'system:role:manage',      '👥', 'C'),
 (15,   '用户管理',     13, 2,  '/system/users',     'system/Users',        'system:user:manage',      '👤', 'C'),
 
-(21,   '电商平台设置',  26, 5,  '/system/platforms', 'system/Platforms',    'system:platform:manage',  '🛒', 'C'),
+(21,   '电商平台设置',  26, 5,  '/basic/platforms',  'basic/Platforms',     'system:platform:manage',  '🛒', 'C'),
 (22,   '系统参数',     13, 5,  '/system/configs',   'system/Configs',      'system:config:manage',    '🔧', 'C'),
 (23,   '定时任务',     13, 6,  '/system/tasks',     'system/Tasks',        'system:task:manage',      '⏰', 'C'),
 (24,   '接口授权',     13, 7,  '/system/openAuth',  'system/OpenAuth',     'system:openAuth:manage',  '🔑', 'C'),
