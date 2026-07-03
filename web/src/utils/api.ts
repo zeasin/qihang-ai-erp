@@ -58,4 +58,7 @@ export const api = {
   categoryList: '/sys-api/basic/category/list',
   categorySave: '/sys-api/basic/category/save',
   categoryDelete: (id: number) => `/sys-api/basic/category/${id}`,
+  brandList: '/sys-api/basic/brand/list',
+  brandSave: '/sys-api/basic/brand/save',
+  brandDelete: (id: number) => `/sys-api/basic/brand/${id}`,
 }
