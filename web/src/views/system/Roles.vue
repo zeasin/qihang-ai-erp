@@ -77,7 +77,7 @@
     <el-dialog v-model="permDialog.visible" :title="'分配权限 - ' + permDialog.roleName" width="500px">
       <el-tree
         ref="menuTreeRef"
-        :data="menuTree"
+        :data="permTreeData"
         show-checkbox
         node-key="menuId"
         :props="{ label: 'menuName', children: 'children' }"
@@ -116,6 +116,7 @@ import { api } from '../../utils/api'
 
 const roles = ref<any[]>([])
 const menuTree = ref<any[]>([])
+const permTreeData = ref<any[]>([])
 const users = ref<any[]>([])
 const saving = ref(false)
 const menuTreeRef = ref<any>(null)
@@ -195,6 +196,12 @@ async function deleteRole(row: any) {
 async function showPermissionDialog(row: any) {
   permDialog.roleId = row.roleId
   permDialog.roleName = row.roleName
+  // 非 admin 角色过滤掉系统管理模块菜单
+  if (row.roleKey !== 'admin') {
+    permTreeData.value = excludeSystemMenus(cloneDeep(menuTree.value))
+  } else {
+    permTreeData.value = menuTree.value
+  }
   permDialog.visible = true
   // 等待树渲染，再设置勾选
   await new Promise(r => setTimeout(r, 100))
@@ -203,6 +210,17 @@ async function showPermissionDialog(row: any) {
   if (menuTreeRef.value) {
     menuTreeRef.value.setCheckedKeys(checkedIds)
   }
+}
+
+/** 递归排除系统管理模块菜单 */
+function excludeSystemMenus(tree: any[]): any[] {
+  return tree.filter(n => n.menuName !== '系统管理')
+    .map(n => ({ ...n, children: n.children ? excludeSystemMenus(n.children) : [] }))
+}
+
+/** 深拷贝 */
+function cloneDeep<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
 }
 
 async function savePermissions() {

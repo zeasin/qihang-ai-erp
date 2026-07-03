@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.*;
 import java.util.stream.Collectors;
 
 @Service
 public class SysRoleManageService {
+
+    /** Top-level menu ID of the system management module (only assignable to admin role) */
+    private static final List<Long> SYSTEM_MENU_PARENT_IDS = Arrays.asList(13L);
 
     @Autowired
     private cn.qihangerp.mapper.SysMenuMapper menuMapper;
@@ -38,8 +40,40 @@ public class SysRoleManageService {
     }
 
     public List<SysMenu> getMenuTree() {
+        return getMenuTree(false);
+    }
+
+    public List<SysMenu> getMenuTree(boolean excludeSystem) {
         List<SysMenu> all = roleMapper.selectAllVisibleMenus();
+        if (excludeSystem) {
+            List<Long> systemIds = getSystemMenuIds();
+            all = all.stream()
+                    .filter(m -> !systemIds.contains(m.getMenuId()))
+                    .collect(Collectors.toList());
+        }
         return buildTree(all, 0L);
+    }
+
+    /**
+     * Get all menu IDs belonging to the system management module,
+     * recursively including all children of top-level system menus.
+     */
+    private List<Long> getSystemMenuIds() {
+        List<SysMenu> allMenus = roleMapper.selectAllMenus();
+        List<Long> systemIds = new ArrayList<>();
+        for (Long parentId : SYSTEM_MENU_PARENT_IDS) {
+            collectChildren(allMenus, parentId, systemIds);
+        }
+        return systemIds;
+    }
+
+    private void collectChildren(List<SysMenu> allMenus, Long parentId, List<Long> result) {
+        result.add(parentId);
+        for (SysMenu menu : allMenus) {
+            if (Objects.equals(menu.getParentId(), parentId)) {
+                collectChildren(allMenus, menu.getMenuId(), result);
+            }
+        }
     }
 
     public List<Long> getRoleMenuIds(Long roleId) {
@@ -48,6 +82,15 @@ public class SysRoleManageService {
 
     @Transactional
     public void updateRoleMenus(Long roleId, List<Long> menuIds) {
+        // 目标角色不是 admin 时，自动过滤系统管理菜单
+        SysRole role = roleMapper.selectById(roleId);
+        if (role != null && !"admin".equals(role.getRoleKey())) {
+            List<Long> systemMenuIds = getSystemMenuIds();
+            menuIds = menuIds.stream()
+                    .filter(id -> !systemMenuIds.contains(id))
+                    .collect(Collectors.toList());
+        }
+
         roleMapper.deleteRoleMenus(roleId);
         for (Long menuId : menuIds) {
             roleMapper.insertRoleMenu(roleId, menuId);
