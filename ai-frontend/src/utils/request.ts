@@ -29,6 +29,11 @@ request.interceptors.response.use(
         localStorage.removeItem('token')
         router.push('/login')
       }
+      // 403 → 权限不足，不跳转登录
+      if (res.code === 403) {
+        ElMessage.error(res.msg || '权限不足')
+        return Promise.reject(new Error(res.msg || '权限不足'))
+      }
       return Promise.reject(new Error(res.msg || '请求失败'))
     }
     return res
@@ -37,6 +42,10 @@ request.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
       router.push('/login')
+    }
+    if (error.response?.status === 403) {
+      ElMessage.error('权限不足')
+      return Promise.reject(new Error('权限不足'))
     }
     ElMessage.error(error.message || '网络错误')
     return Promise.reject(error)
