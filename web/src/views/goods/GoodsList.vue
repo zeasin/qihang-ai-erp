@@ -1,7 +1,7 @@
 <template>
   <div class="page-card">
     <div class="page-header">
-      <h3>📋 商品库管理</h3>
+      <h3>📋 商品列表</h3>
       <el-button type="primary" size="small" @click="$router.push('/goods/create')">新增商品</el-button>
     </div>
 

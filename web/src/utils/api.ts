@@ -89,4 +89,10 @@ export const api = {
   goodsSave: '/erp-api/goods/save',
   goodsAdd: '/erp-api/goods/add',
   goodsDelete: (id: number) => `/erp-api/goods/${id}`,
+
+  // 订单管理
+  orderList: '/erp-api/order/list',
+  orderGet: (id: number) => `/erp-api/order/${id}`,
+  orderSave: '/erp-api/order/save',
+  orderDelete: (id: number) => `/erp-api/order/${id}`,
 }

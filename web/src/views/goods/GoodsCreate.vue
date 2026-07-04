@@ -1,7 +1,7 @@
 <template>
   <div class="page-card">
     <div style="margin-bottom:16px">
-      <el-button text @click="$router.push('/goods/list')">← 返回商品库</el-button>
+      <el-button text @click="$router.push('/goods/list')">← 返回商品列表</el-button>
       <span style="font-size:16px;font-weight:600;margin-left:12px">新增商品</span>
     </div>
 
