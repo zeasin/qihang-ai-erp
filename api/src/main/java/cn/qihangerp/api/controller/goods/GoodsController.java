@@ -80,6 +80,11 @@ public class GoodsController {
         return service.addWithSkus(goods, skuList);
     }
 
+    @GetMapping("/skuList")
+    public PageResult<OGoodsSku> skuList(PageQuery pageQuery, String keyword) {
+        return service.skuList(keyword, pageQuery);
+    }
+
     @DeleteMapping("/{id}")
     public AjaxResult delete(@PathVariable Long id) {
         if (!hasPerm("goods:goods:remove")) return AjaxResult.error(403, "权限不足");

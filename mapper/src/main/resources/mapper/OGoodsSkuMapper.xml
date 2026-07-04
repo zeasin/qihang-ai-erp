@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qihangerp.mapper.OGoodsSkuMapper">
+    <select id="selectSkuPageList" resultType="cn.qihangerp.model.OGoodsSku">
+        SELECT s.*, g.name AS goodsName, g.image AS goodsImg
+        FROM o_goods_sku s
+        LEFT JOIN o_goods g ON s.goods_id = g.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (g.name ILIKE CONCAT('%', #{keyword}, '%')
+                     OR s.sku_code ILIKE CONCAT('%', #{keyword}, '%')
+                     OR g.goods_num ILIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY s.id DESC
+    </select>
+</mapper>

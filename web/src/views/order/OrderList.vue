@@ -48,7 +48,9 @@
           <el-tag :type="statusType(row.orderStatus)" size="small">{{ statusLabel(row.orderStatus) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="orderTime" label="下单时间" width="160" />
+      <el-table-column label="下单时间" width="160">
+          <template #default="{ row }">{{ row.orderTime ? (row.orderTime + '').split('.').slice(0,1).join('').replace('T',' ') : '-' }}</template>
+        </el-table-column>
       <el-table-column label="操作" width="160" align="center" fixed="right">
         <template #default="{ row }">
           <el-button size="small" type="primary" link @click="showDetail(row)">详情</el-button>
@@ -59,7 +61,7 @@
 
     <div style="margin-top:12px;text-align:right">
       <el-pagination
-        v-model:page="pageNum" v-model:page-size="pageSize"
+        v-model:current-page="pageNum" v-model:page-size="pageSize"
         :total="total" :page-sizes="[10,20,50]"
         layout="total,sizes,prev,pager,next" @change="fetchData"
       />

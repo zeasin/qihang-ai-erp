@@ -62,6 +62,11 @@ public class OGoodsService {
         return AjaxResult.success();
     }
 
+    public PageResult<OGoodsSku> skuList(String keyword, PageQuery pageQuery) {
+        IPage<OGoodsSku> page = skuMapper.selectSkuPageList(pageQuery.build(), keyword);
+        return PageResult.build(page);
+    }
+
     public void delete(Long id) {
         mapper.deleteById(id);
     }

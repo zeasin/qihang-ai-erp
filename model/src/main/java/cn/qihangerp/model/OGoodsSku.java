@@ -1,6 +1,7 @@
 package cn.qihangerp.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.math.BigDecimal;
@@ -34,6 +35,9 @@ public class OGoodsSku {
     private Date createTime;
     private String updateBy;
     private Date updateTime;
+
+    @TableField(exist = false)
+    private String goodsImg;
 
     public Long getId() { return id; }
     public void setId(Long v) { this.id = v; }
@@ -81,4 +85,6 @@ public class OGoodsSku {
     public void setUpdateBy(String v) { this.updateBy = v; }
     public Date getUpdateTime() { return updateTime; }
     public void setUpdateTime(Date v) { this.updateTime = v; }
+    public String getGoodsImg() { return goodsImg; }
+    public void setGoodsImg(String v) { this.goodsImg = v; }
 }

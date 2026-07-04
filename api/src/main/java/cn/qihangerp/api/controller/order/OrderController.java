@@ -9,6 +9,8 @@ import cn.qihangerp.service.OOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,13 @@ public class OrderController {
         order.setTown((String) body.get("town"));
         order.setAddress((String) body.get("address"));
         order.setRemark((String) body.get("remark"));
+
+        Object orderTimeObj = body.get("orderTime");
+        if (orderTimeObj != null && !orderTimeObj.toString().isEmpty()) {
+            try {
+                order.setOrderTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(orderTimeObj.toString()));
+            } catch (Exception ignored) {}
+        }
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> itemMaps = (List<Map<String, Object>>) body.get("itemList");

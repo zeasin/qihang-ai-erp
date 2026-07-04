@@ -7,49 +7,47 @@
 
     <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" style="max-width:800px">
       <el-form-item label="订单号" prop="orderNum">
-        <el-input v-model="form.orderNum" placeholder="自动生成或手动输入" style="width:260px" />
+        <el-input v-model="form.orderNum" style="width:260px" />
       </el-form-item>
       <el-form-item label="下单时间">
-        <el-date-picker v-model="form.orderTime" type="datetime" placeholder="选择时间" value-format="YYYY-MM-DD HH:mm:ss" />
+        <el-date-picker v-model="form.orderTime" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
       </el-form-item>
 
       <el-divider>收件人信息</el-divider>
       <el-form-item label="收件人" prop="receiverName">
-        <el-input v-model="form.receiverName" placeholder="收件人姓名" style="width:200px" />
+        <el-input v-model="form.receiverName" style="width:200px" />
       </el-form-item>
       <el-form-item label="手机号" prop="receiverMobile">
-        <el-input v-model="form.receiverMobile" placeholder="手机号" style="width:200px" />
+        <el-input v-model="form.receiverMobile" style="width:200px" />
       </el-form-item>
-      <el-form-item label="收货地址">
-        <el-input v-model="form.province" placeholder="省" style="width:120px;margin-right:8px" />
-        <el-input v-model="form.city" placeholder="市" style="width:120px;margin-right:8px" />
-        <el-input v-model="form.town" placeholder="区" style="width:120px" />
+      <el-form-item label="省市区" prop="region">
+        <el-cascader v-model="regionVal" :options="regionOptions" filterable clearable placeholder="搜索选择"
+          style="width:300px" @change="regionChange" />
       </el-form-item>
-      <el-form-item label="详细地址">
-        <el-input v-model="form.address" placeholder="详细地址" />
+      <el-form-item label="详细地址" prop="address">
+        <el-input v-model="form.address" />
       </el-form-item>
 
       <el-divider>商品信息</el-divider>
       <div style="margin-bottom:12px">
-        <el-button size="small" type="primary" @click="addItem">+ 添加商品</el-button>
+        <el-button size="small" type="primary" @click="showSkuSelector = true">+ 选择商品</el-button>
       </div>
       <el-table :data="form.itemList" border size="small" style="width:100%">
-        <el-table-column label="商品" min-width="180">
-          <template #default="{ row, $index }">
-            <el-select v-model="row.goodsId" filterable remote :remote-method="(q) => searchGoods(q, $index)"
-              placeholder="搜索商品" style="width:100%" @change="(v) => goodsChanged(v, $index)">
-              <el-option v-for="g in goodsOptions" :key="g.id" :label="g.name" :value="g.id" />
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column label="规格" width="120">
+        <el-table-column label="商品" min-width="200">
           <template #default="{ row }">
-            <el-select v-model="row.goodsSkuId" placeholder="规格" style="width:100%" @change="skuChanged($index)">
-              <el-option v-for="s in row.skuOptions || []" :key="s.id" :label="s.skuName || s.skuCode" :value="s.id" />
-            </el-select>
+            <div style="display:flex;align-items:center;gap:8px">
+              <el-image v-if="row.goodsImg" :src="row.goodsImg" style="width:36px;height:36px;border-radius:4px" fit="cover" />
+              <div>
+                <div>{{ row.goodsTitle }}</div>
+                <div v-if="row.goodsSpec" style="font-size:12px;color:#999">{{ row.goodsSpec }}</div>
+              </div>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="单价" width="80">
+        <el-table-column label="SKU编码" width="120">
+          <template #default="{ row }">{{ row.skuNum || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="单价" width="90">
           <template #default="{ row }">
             <el-input-number v-model="row.goodsPrice" :precision="2" :min="0" size="small" style="width:80px" />
           </template>
@@ -91,6 +89,46 @@
         <el-button @click="$router.push('/order/list')" size="default">取消</el-button>
       </el-form-item>
     </el-form>
+
+    <el-dialog v-model="showSkuSelector" title="选择商品SKU" width="800px" top="5vh">
+      <div style="display:flex;gap:12px;margin-bottom:12px">
+        <el-input v-model="skuKeyword" placeholder="搜索商品名称 / SKU编码 / 商品编号" clearable style="flex:1"
+          @keyup.enter="searchSku" />
+        <el-button type="primary" @click="searchSku">搜索</el-button>
+      </div>
+      <el-table :data="skuList" border size="small" v-loading="skuLoading" max-height="420"
+        @row-click="selectSku" highlight-current-row>
+        <el-table-column label="商品" min-width="180">
+          <template #default="{ row }">
+            <div style="display:flex;align-items:center;gap:8px">
+              <el-image v-if="row.goodsImg" :src="row.goodsImg" style="width:36px;height:36px;border-radius:4px" fit="cover" />
+              <span>{{ row.goodsName }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="规格" width="120">
+          <template #default="{ row }">
+            <div>{{ row.skuName || '-' }}</div>
+            <div style="font-size:12px;color:#999">
+              <span v-if="row.colorValue">{{ row.colorValue }}</span>
+              <span v-if="row.sizeValue"> / {{ row.sizeValue }}</span>
+              <span v-if="row.styleValue"> / {{ row.styleValue }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="SKU编码" width="120" prop="skuCode" />
+        <el-table-column label="零售价" width="80" align="right" prop="retailPrice" />
+        <el-table-column label="操作" width="60" align="center">
+          <template #default="{ row }">
+            <el-button size="small" type="primary" @click.stop="selectSku(row)">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div style="text-align:right;margin-top:8px">
+        <el-pagination v-model:current-page="skuPage" v-model:page-size="skuPageSize" :total="skuTotal"
+          :page-sizes="[10,20,50]" layout="total,sizes,prev,pager,next" small @change="searchSku" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -98,78 +136,80 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { pcaTextArr } from 'element-china-area-data'
 import request from '../../utils/request'
 import { api } from '../../utils/api'
 
 const router = useRouter()
 const formRef = ref()
 const submitting = ref(false)
-const goodsOptions = ref<any[]>([])
 
 const form = reactive<any>({
   orderNum: '', orderTime: '',
   receiverName: '', receiverMobile: '', province: '', city: '', town: '', address: '',
   goodsAmount: 0, postFee: 0, discountAmount: 0, payment: 0, remark: '',
-  itemList: [],
+  itemList: [], region: '',
 })
 
 const rules: any = {
   orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
   receiverName: [{ required: true, message: '收件人不能为空', trigger: 'blur' }],
   receiverMobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
+  region: [{ validator: (_rule: any, _value: any, callback: Function) => {
+    regionVal.value.length > 0 ? callback() : callback(new Error('请选择省市区'))
+  }, trigger: 'change' }],
+  address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
 }
 
-let searchTimer: any = null
-function searchGoods(query: string, index: number) {
-  clearTimeout(searchTimer)
-  if (!query) return
-  searchTimer = setTimeout(async () => {
-    const res: any = await request.get(api.goodsList, { params: { name: query, pageSize: 20 } })
-    goodsOptions.value = res.rows || []
-  }, 300)
+const showSkuSelector = ref(false)
+const skuKeyword = ref('')
+const skuList = ref<any[]>([])
+const skuTotal = ref(0)
+const skuPage = ref(1)
+const skuPageSize = ref(10)
+const skuLoading = ref(false)
+
+const regionOptions = pcaTextArr
+const regionVal = ref<string[]>([])
+
+function regionChange(val: string[]) {
+  if (val && val.length >= 1) form.province = val[0]
+  if (val && val.length >= 2) form.city = val[1]
+  if (val && val.length >= 3) form.town = val[2]
 }
 
-async function goodsChanged(goodsId: number, index: number) {
-  const item = form.itemList[index]
-  const goods = goodsOptions.value.find((g: any) => g.id === goodsId)
-  if (goods) {
-    item.goodsTitle = goods.name
-    item.goodsNum = goods.goodsNum
-    item.goodsImg = goods.image
-    item.goodsPrice = goods.retailPrice || 0
-    // load SKUs
-    const skuRes: any = await request.get(api.goodsList, { params: { pageSize: 200 } })
-    const allGoods = skuRes.rows || []
-    // just set the goods name for now
+async function searchSku() {
+  skuLoading.value = true
+  try {
+    const res: any = await request.get(api.goodsSkuList, {
+      params: { keyword: skuKeyword.value, pageNum: skuPage.value, pageSize: skuPageSize.value }
+    })
+    skuList.value = res.rows || []
+    skuTotal.value = res.total || 0
+  } finally { skuLoading.value = false }
+}
+
+function selectSku(sku: any) {
+  const spec = [sku.colorValue, sku.sizeValue, sku.styleValue].filter(Boolean).join(' / ')
+  const item = {
+    goodsId: sku.goodsId,
+    goodsSkuId: sku.id,
+    goodsTitle: sku.goodsName,
+    goodsImg: sku.goodsImg,
+    goodsNum: sku.goodsNum,
+    goodsSpec: spec || sku.skuName,
+    skuNum: sku.skuCode,
+    goodsPrice: sku.retailPrice || 0,
+    quantity: 1,
+    remark: '',
   }
-  // try to load SKUs via the goods detail
-  try {
-    const res: any = await request.get(api.goodsGet(goodsId))
-    const goodsDetail = res.data
-    if (goodsDetail) {
-      item.goodsTitle = goodsDetail.name
-      item.goodsNum = goodsDetail.goodsNum
-      item.goodsImg = goodsDetail.image
-      item.goodsPrice = goodsDetail.retailPrice || 0
-    }
-  } catch { /* ignore */ }
-  // load SKU options from a separate endpoint - actually we need SKU list by goods
-  try {
-    // Use the goods list to find SKUs - for now let's just set a placeholder
-    // The goods detail should include SKUs
-  } catch { /* ignore */ }
+  form.itemList.push(item)
+  showSkuSelector.value = false
+  recalcAmount()
 }
 
-function skuChanged(index: number) {
-  // SKU selected, update price
-}
-
-function addItem() {
-  form.itemList.push({
-    goodsId: null, goodsSkuId: null, goodsTitle: '', goodsImg: '', goodsNum: '',
-    goodsSpec: '', skuNum: '', goodsPrice: 0, quantity: 1, remark: '',
-    skuOptions: [],
-  })
+function recalcAmount() {
+  form.goodsAmount = form.itemList.reduce((s: number, i: any) => s + (i.goodsPrice || 0) * (i.quantity || 1), 0)
 }
 
 async function submitForm() {
@@ -188,8 +228,7 @@ async function submitForm() {
 }
 
 onMounted(() => {
-  if (!form.orderNum) {
-    form.orderNum = 'ORD' + Date.now()
-  }
+  if (!form.orderNum) form.orderNum = 'ORD' + Date.now()
+  if (!form.orderTime) form.orderTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
 })
 </script>

@@ -61,7 +61,7 @@
 
     <div style="margin-top:12px;text-align:right">
       <el-pagination
-        v-model:page="pageNum" v-model:page-size="pageSize"
+        v-model:current-page="pageNum" v-model:page-size="pageSize"
         :total="total" :page-sizes="[10,20,50]"
         layout="total,sizes,prev,pager,next" @change="fetchData"
       />
