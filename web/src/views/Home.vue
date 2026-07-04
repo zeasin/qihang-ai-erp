@@ -26,9 +26,9 @@
                 <el-dropdown-item v-if="isAdmin()" divided>
                   <div style="width:100%" @click="$router.push('/system/menus')">⚙️ 系统管理</div>
                 </el-dropdown-item>
-                <el-dropdown-item v-if="isAdmin()">
-                  <div style="width:100%" @click="$router.push('/basic/shops')">📡 基础数据</div>
-                </el-dropdown-item>
+<!--                <el-dropdown-item v-if="isAdmin()">-->
+<!--                  <div style="width:100%" @click="$router.push('/basic/shops')">📡 基础数据</div>-->
+<!--                </el-dropdown-item>-->
                 <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -57,7 +57,7 @@
             </el-input>
           </el-card>
 
-          <!-- ─── 动态工作台入口 (按权限渲染) ─── -->
+          <!-- ─── 工作台卡片 (按角色/权限渲染) ─── -->
           <div class="section-label" v-if="workspaceMenus.length > 0">👷 我的工作台</div>
           <div class="workspace-grid" v-if="workspaceMenus.length > 0">
             <div v-for="m in workspaceMenus" :key="m.menuId"
@@ -71,31 +71,19 @@
             </div>
           </div>
 
-          <!-- ─── 系统管理入口 ─── -->
-          <div class="section-label" v-if="hasPerm('system:manage') || isAdmin()">⚙️ 系统管理</div>
-          <div class="workspace-grid" v-if="hasPerm('system:manage') || isAdmin()">
-            <div v-for="m in sysMenus" :key="m.menuId"
-              class="ws-card" @click="goMenu(m)">
-              <div class="ws-icon">{{ m.icon || '⚙️' }}</div>
-              <div class="ws-info">
-                <div class="ws-name">{{ m.menuName }}</div>
-                <div class="ws-desc">{{ m.perms }}</div>
+          <!-- ─── 系统菜单卡片 (1级菜单=卡片标题, 2级菜单=内容) ─── -->
+          <div v-for="group in menuGroups" :key="group.menuId" style="margin-top:24px">
+            <div class="section-label">{{ group.icon }} {{ group.menuName }}</div>
+            <div class="workspace-grid">
+              <div v-for="child in group.children" :key="child.menuId"
+                class="ws-card" @click="goMenu(child)">
+                <div class="ws-icon">{{ child.icon || '📄' }}</div>
+                <div class="ws-info">
+                  <div class="ws-name">{{ child.menuName }}</div>
+                  <div class="ws-desc">{{ child.perms }}</div>
+                </div>
+                <el-icon class="ws-arrow"><ArrowRight /></el-icon>
               </div>
-              <el-icon class="ws-arrow"><ArrowRight /></el-icon>
-            </div>
-          </div>
-
-          <!-- ─── 基础数据入口 ─── -->
-          <div class="section-label" v-if="hasPerm('basic:data:manage') || isAdmin()">📡 基础数据</div>
-          <div class="workspace-grid" v-if="hasPerm('basic:data:manage') || isAdmin()">
-            <div v-for="m in basicDataMenus" :key="m.menuId"
-              class="ws-card" @click="goMenu(m)">
-              <div class="ws-icon">{{ m.icon || '📄' }}</div>
-              <div class="ws-info">
-                <div class="ws-name">{{ m.menuName }}</div>
-                <div class="ws-desc">{{ m.perms }}</div>
-              </div>
-              <el-icon class="ws-arrow"><ArrowRight /></el-icon>
             </div>
           </div>
 
@@ -129,39 +117,46 @@ import { api } from '../utils/api'
 const router = useRouter()
 const authStore = useAuthStore()
 const searchQuery = ref('')
-const menus = ref<any[]>([])
+const treeData = ref<any[]>([])
+const flatMenus = ref<any[]>([])
 
 // 用户拥有的所有菜单权限
 const userPerms = computed(() => authStore.permissions || [])
 
-// 有权限的工作台菜单 (类型为 C，有 path)
-const workspaceMenus = computed(() =>
-  menus.value.filter(m =>
-    m.menuType === 'C' && m.path &&
-    m.menuId < 13  // 非系统管理菜单
-  )
-)
+// 有权限的工作台菜单
+// admin 固定：智能看板 + AI对话
+// 非 admin：有权限的 C 类根菜单 + AI对话
+const workspaceMenus = computed(() => {
+  const ws = flatMenus.value.filter(m => m.menuType === 'C' && m.path && m.parentId === 0)
+  if (isAdmin()) {
+    return ws.filter(m => m.menuId === 1 || m.menuId === 12)
+  }
+  return ws.filter(m => hasMenuPerm(m))
+})
 
-// 系统管理子菜单 (parentId=13 的所有二级菜单)
-const sysMenus = computed(() =>
-  menus.value.filter(m =>
-    m.parentId === 13 && m.menuType === 'C' && m.path
-  ).sort((a, b) => (a.orderNum || 0) - (b.orderNum || 0))
-)
-
-// 基础数据子菜单 (parentId=26 的所有二级菜单)
-const basicDataMenus = computed(() =>
-  menus.value.filter(m =>
-    m.parentId === 26 && m.menuType === 'C' && m.path
-  ).sort((a, b) => (a.orderNum || 0) - (b.orderNum || 0))
-)
+// 1 级 M 目录分组（排除工作台类 C 菜单），显示为卡片组
+const menuGroups = computed(() => {
+  return treeData.value
+    .filter(m => m.menuType === 'M' && hasMenuPerm(m))
+    .map(m => ({
+      ...m,
+      children: (m.children || []).filter((c: any) => c.menuType === 'C' && c.path && hasMenuPerm(c))
+        .sort((a: any, b: any) => (a.orderNum || 0) - (b.orderNum || 0))
+    }))
+    .filter(m => m.children.length > 0)
+})
 
 function isAdmin() {
   return authStore.roles.some(r => r.roleKey === 'admin')
 }
 
 function hasPerm(perm: string) {
-  return userPerms.value.includes(perm) || userPerms.value.includes('*:*:*') || isAdmin()
+  return userPerms.value.includes(perm) || userPerms.value.includes('*:*:*')
+}
+
+function hasMenuPerm(m: any) {
+  if (!m.perms) return true
+  return hasPerm(m.perms)
 }
 
 function goMenu(m: any) {
@@ -212,7 +207,7 @@ onMounted(async () => {
   if (authStore.isLoggedIn) {
     try {
       const res: any = await request.get(api.menuTree)
-      menus.value = res.data || []
+      treeData.value = res.data || []
       // 扁平化
       const flat: any[] = []
       function flatten(list: any[]) {
@@ -221,8 +216,8 @@ onMounted(async () => {
           if (m.children) flatten(m.children)
         }
       }
-      flatten(menus.value)
-      menus.value = flat
+      flatten(treeData.value)
+      flatMenus.value = flat
     } catch {}
   }
 })
