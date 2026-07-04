@@ -14,15 +14,12 @@ public class ErpStockOut {
     private Long sourceId;
     private Integer type;
     private Long shopId;
-    private Long shopGroupId;
     private Integer goodsUnit;
     private Integer specUnit;
     private Integer specUnitTotal;
     private Integer outTotal;
     private String remark;
     private Integer status;
-    private Integer printStatus;
-    private Date printTime;
     private Date outTime;
     private Date completeTime;
     private Long operatorId;
@@ -41,15 +38,12 @@ public class ErpStockOut {
     public Long getSourceId() { return sourceId; } public void setSourceId(Long v) { this.sourceId = v; }
     public Integer getType() { return type; } public void setType(Integer v) { this.type = v; }
     public Long getShopId() { return shopId; } public void setShopId(Long v) { this.shopId = v; }
-    public Long getShopGroupId() { return shopGroupId; } public void setShopGroupId(Long v) { this.shopGroupId = v; }
     public Integer getGoodsUnit() { return goodsUnit; } public void setGoodsUnit(Integer v) { this.goodsUnit = v; }
     public Integer getSpecUnit() { return specUnit; } public void setSpecUnit(Integer v) { this.specUnit = v; }
     public Integer getSpecUnitTotal() { return specUnitTotal; } public void setSpecUnitTotal(Integer v) { this.specUnitTotal = v; }
     public Integer getOutTotal() { return outTotal; } public void setOutTotal(Integer v) { this.outTotal = v; }
     public String getRemark() { return remark; } public void setRemark(String v) { this.remark = v; }
     public Integer getStatus() { return status; } public void setStatus(Integer v) { this.status = v; }
-    public Integer getPrintStatus() { return printStatus; } public void setPrintStatus(Integer v) { this.printStatus = v; }
-    public Date getPrintTime() { return printTime; } public void setPrintTime(Date v) { this.printTime = v; }
     public Date getOutTime() { return outTime; } public void setOutTime(Date v) { this.outTime = v; }
     public Date getCompleteTime() { return completeTime; } public void setCompleteTime(Date v) { this.completeTime = v; }
     public Long getOperatorId() { return operatorId; } public void setOperatorId(Long v) { this.operatorId = v; }
