@@ -113,4 +113,12 @@ export const api = {
   purchaseStockIn: (id: number) => `/erp-api/purchase/${id}/stockIn`,
   purchaseStockInList: '/erp-api/purchase/stock-in/list',
   purchaseStockInGet: (id: number) => `/erp-api/purchase/stock-in/${id}`,
+
+  // 售后管理
+  afterSaleList: '/erp-api/after-sale/list',
+  afterSaleGet: (id: number) => `/erp-api/after-sale/${id}`,
+  afterSaleCreate: '/erp-api/after-sale/create',
+  afterSaleApprove: (id: number) => `/erp-api/after-sale/${id}/approve`,
+  afterSaleRefund: (id: number) => `/erp-api/after-sale/${id}/refund`,
+  afterSaleReturnStock: (id: number) => `/erp-api/after-sale/${id}/returnStock`,
 }

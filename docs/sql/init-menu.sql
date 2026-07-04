@@ -118,7 +118,13 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 按钮权限
 (44,   '新增订单',    41, 1,  null,                null,                  'order:order:add',         '➕', 'F'),
 (45,   '编辑订单',    41, 2,  null,                null,                  'order:order:edit',        '✏️', 'F'),
-(46,   '删除订单',    41, 3,  null,                null,                  'order:order:remove',      '🗑️', 'F'),
+(46,   '删除订单',    41, 3,  null,                  null,                       'order:order:remove',      '🗑️', 'F'),
+-- 售后菜单（挂在订单管理下）
+(47,   '售后单列表',  40, 20, '/order/after-sale',   'order/AfterSaleList',  'after:sale:list',          '🔄', 'C'),
+-- 按钮权限
+(48,   '审核',        47, 1,  null,                  null,                       'after:sale:audit',         '✅', 'F'),
+(49,   '退款',        47, 2,  null,                  null,                       'after:sale:refund',        '💰', 'F'),
+(55,   '退货入库',    47, 3,  null,                  null,                       'after:sale:return',        '📥', 'F'),
 -- ====================================================================
 -- 一级：发货管理 (menu_id=50, M=目录) 供发货/仓储人员使用
 -- ====================================================================
@@ -152,7 +158,7 @@ SELECT 1, menu_id FROM sys_menu;
 
 -- 订单处理员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES
-(2,1), (2,2), (2,3), (2,4), (2,5), (2,12), (2,40), (2,41), (2,42), (2,44), (2,45), (2,46);
+(2,1), (2,2), (2,3), (2,4), (2,5), (2,12), (2,40), (2,41), (2,42), (2,44), (2,45), (2,46), (2,47), (2,48), (2,49), (2,55);
 
 -- 拣货员
 
