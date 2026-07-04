@@ -87,5 +87,6 @@ export const api = {
   goodsList: '/erp-api/goods/list',
   goodsGet: (id: number) => `/erp-api/goods/${id}`,
   goodsSave: '/erp-api/goods/save',
+  goodsAdd: '/erp-api/goods/add',
   goodsDelete: (id: number) => `/erp-api/goods/${id}`,
 }

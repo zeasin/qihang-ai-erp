@@ -2,7 +2,7 @@
   <div class="page-card">
     <div class="page-header">
       <h3>📋 商品库管理</h3>
-      <el-button type="primary" size="small" @click="showDialog(null)">新增商品</el-button>
+      <el-button type="primary" size="small" @click="$router.push('/goods/create')">新增商品</el-button>
     </div>
 
     <el-form :model="query" inline size="small" style="margin-bottom:12px">
@@ -53,7 +53,7 @@
       <el-table-column prop="createTime" label="创建时间" width="160" />
       <el-table-column label="操作" width="160" align="center" fixed="right">
         <template #default="{ row }">
-          <el-button size="small" type="primary" link @click="showDialog(row)">编辑</el-button>
+          <el-button size="small" type="primary" link @click="$router.push('/goods/edit?id='+row.id)">编辑</el-button>
           <el-button size="small" type="danger" link @click="deleteRow(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -67,42 +67,6 @@
       />
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="form.id?'编辑商品':'新增商品'" width="600px">
-      <el-form :model="form" label-width="100px" size="small">
-        <el-form-item label="商品名称">
-          <el-input v-model="form.name" />
-        </el-form-item>
-        <el-form-item label="商品编号">
-          <el-input v-model="form.goodsNum" />
-        </el-form-item>
-        <el-form-item label="分类">
-          <el-select v-model="form.categoryId" placeholder="请选择" clearable style="width:100%">
-            <el-option v-for="c in categories" :key="c.id" :label="c.name" :value="c.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="品牌">
-          <el-select v-model="form.brandId" placeholder="请选择" clearable style="width:100%">
-            <el-option v-for="b in brands" :key="b.id" :label="b.name" :value="b.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="零售价">
-          <el-input-number v-model="form.retailPrice" :precision="2" :min="0" style="width:200px" />
-        </el-form-item>
-        <el-form-item label="单位">
-          <el-input v-model="form.unitName" placeholder="如：件、个" style="width:120px" />
-        </el-form-item>
-        <el-form-item label="商品图片">
-          <el-input v-model="form.image" placeholder="图片URL" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form.remark" type="textarea" :rows="2" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible=false">取消</el-button>
-        <el-button type="primary" @click="submitForm" :loading="submitting">保存</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -113,7 +77,6 @@ import request from '../../utils/request'
 import { api } from '../../utils/api'
 
 const loading = ref(false)
-const submitting = ref(false)
 const list = ref<any[]>([])
 const total = ref(0)
 const pageNum = ref(1)
@@ -122,9 +85,6 @@ const categories = ref<any[]>([])
 const brands = ref<any[]>([])
 
 const query = reactive({ name: '', categoryId: undefined as any, brandId: undefined as any, status: undefined as any })
-
-const dialogVisible = ref(false)
-const form = reactive<any>({})
 
 function search() { pageNum.value = 1; fetchData() }
 function resetQuery() {
@@ -152,29 +112,6 @@ async function loadOptions() {
     categories.value = catRes.data || []
     brands.value = brandRes.data || []
   } catch { /* ignore */ }
-}
-
-function showDialog(row: any) {
-  if (row) {
-    Object.assign(form, { ...row })
-  } else {
-    Object.keys(form).forEach(k => delete form[k])
-  }
-  dialogVisible.value = true
-}
-
-async function submitForm() {
-  submitting.value = true
-  try {
-    const res: any = await request.post(api.goodsSave, form)
-    if (res.code === 200) {
-      ElMessage.success('保存成功')
-      dialogVisible.value = false
-      fetchData()
-    } else {
-      ElMessage.error(res.msg || '保存失败')
-    }
-  } finally { submitting.value = false }
 }
 
 async function deleteRow(row: any) {

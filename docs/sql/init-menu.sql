@@ -102,10 +102,15 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- ====================================================================
 (30, '商品管理',       0, 30, '/goods',            'goods/GoodsLayout',   'goods:manage',            '📦', 'M'),
 (31,   '商品库管理',   30, 10, '/goods/list',      'goods/GoodsList',     'goods:goods:list',        '📋', 'C'),
+-- 隐藏页面
+(32,   '新增商品页面', 30, 11, '/goods/create',    'goods/GoodsCreate',   null,                    '➕', 'C'),
 -- 按钮权限
 (34,   '新增商品',    31, 1,  null,                null,                  'goods:goods:add',         '➕', 'F'),
 (35,   '编辑商品',    31, 2,  null,                null,                  'goods:goods:edit',        '✏️', 'F'),
 (36,   '删除商品',    31, 3,  null,                null,                  'goods:goods:remove',      '🗑️', 'F');
+
+-- 新增商品页面设为隐藏（visible='1'），不显示在侧边栏
+UPDATE sys_menu SET visible = '1' WHERE menu_id = 32;
 
 -- ====================================================================
 -- 角色-菜单分配

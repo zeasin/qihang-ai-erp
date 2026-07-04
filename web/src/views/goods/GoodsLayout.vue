@@ -36,7 +36,7 @@ onMounted(async () => {
     const tree = res.data || []
     const goodsMenu = tree.find((m: any) => m.path === '/goods')
     if (goodsMenu?.children) {
-      childMenus.value = goodsMenu.children.filter((c: any) => c.menuType === 'C')
+      childMenus.value = goodsMenu.children.filter((c: any) => c.menuType === 'C' && c.visible !== '1')
     }
   } catch { /* ignore */ }
 })
