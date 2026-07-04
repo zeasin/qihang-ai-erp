@@ -11,11 +11,11 @@ import cn.qihangerp.service.OOrderService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * AI 可调用的业务工具集：把 ERP 的订单/商品/库存查询能力暴露给大模型，
@@ -30,6 +30,8 @@ public class ErpTools {
     private OGoodsService goodsService;
     @Autowired
     private OGoodsSkuStockService stockService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Tool(description = "查询订单列表。可按订单号(模糊)、收货人姓名(模糊)、订单状态、下单时间范围筛选。" +
             "订单状态：0=待付款，1=已付款待发货，2=已发货，3=已完成，4=已取消。" +
@@ -118,6 +120,31 @@ public class ErpTools {
         ret.put("total", result.getTotal());
         ret.put("stocks", rows);
         return ret;
+    }
+
+    @Tool(description = "执行只读SQL查询并返回结果。只能执行SELECT语句，不可修改数据。返回结果最多100行。")
+    public List<Map<String, Object>> queryBySql(
+            @ToolParam(description = "只读SQL查询语句，仅限SELECT。如果未指定ORDER BY则自动按id倒序。") String sql) {
+        String trimmed = sql.trim();
+        if (!trimmed.toUpperCase().startsWith("SELECT")) {
+            throw new RuntimeException("只允许执行 SELECT 查询");
+        }
+        if (trimmed.toUpperCase().contains("INTO ")) {
+            throw new RuntimeException("不允许 SELECT INTO");
+        }
+        String finalSql = trimmed;
+        if (!trimmed.toUpperCase().contains("LIMIT")) {
+            finalSql = trimmed.replaceAll(";\\s*$", "") + " LIMIT 100";
+        }
+        return jdbcTemplate.query(finalSql, (rs, rowNum) -> {
+            Map<String, Object> row = new LinkedHashMap<>();
+            var meta = rs.getMetaData();
+            int count = meta.getColumnCount();
+            for (int i = 1; i <= count; i++) {
+                row.put(meta.getColumnLabel(i), rs.getObject(i));
+            }
+            return row;
+        });
     }
 
     private Map<String, Object> orderSummary(OOrder o) {
