@@ -85,3 +85,25 @@ INSERT INTO erp_merchant (id, login_name, name, number, status) VALUES
 
 SELECT setval('o_shop_platform_id_seq', (SELECT MAX(id) FROM o_shop_platform));
 SELECT setval('erp_merchant_id_seq', (SELECT MAX(id) FROM erp_merchant));
+
+-- ====================================================================
+-- 国家地区设置
+-- ====================================================================
+DROP TABLE IF EXISTS o_shop_region;
+CREATE TABLE o_shop_region (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    exchange_rate FLOAT,
+    num VARCHAR(20),
+    status INT DEFAULT 0,
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    create_by VARCHAR(25),
+    update_time TIMESTAMP,
+    update_by VARCHAR(25)
+);
+
+INSERT INTO o_shop_region (id, name, exchange_rate, num, status, create_by) VALUES
+(1, '中国', 1, '86', 0, 'system');
+
+
+SELECT setval('o_shop_region_id_seq', (SELECT MAX(id) FROM o_shop_region));

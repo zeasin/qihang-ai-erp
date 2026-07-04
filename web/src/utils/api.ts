@@ -76,4 +76,7 @@ export const api = {
   warehouseList: '/sys-api/basic/warehouse/list',
   warehouseSave: '/sys-api/basic/warehouse/save',
   warehouseDelete: (id: number) => `/sys-api/basic/warehouse/${id}`,
+  regionList: '/sys-api/basic/region/list',
+  regionSave: '/sys-api/basic/region/save',
+  regionDelete: (id: number) => `/sys-api/basic/region/${id}`,
 }
