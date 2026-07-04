@@ -79,4 +79,7 @@ export const api = {
   regionList: '/sys-api/basic/region/list',
   regionSave: '/sys-api/basic/region/save',
   regionDelete: (id: number) => `/sys-api/basic/region/${id}`,
+  logisticsCompanyList: '/sys-api/basic/logistics-company/list',
+  logisticsCompanySave: '/sys-api/basic/logistics-company/save',
+  logisticsCompanyDelete: (id: number) => `/sys-api/basic/logistics-company/${id}`,
 }
