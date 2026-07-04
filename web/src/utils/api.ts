@@ -121,4 +121,11 @@ export const api = {
   afterSaleApprove: (id: number) => `/erp-api/after-sale/${id}/approve`,
   afterSaleRefund: (id: number) => `/erp-api/after-sale/${id}/refund`,
   afterSaleReturnStock: (id: number) => `/erp-api/after-sale/${id}/returnStock`,
+
+  // 库存管理
+  stockList: '/erp-api/stock/list',
+  stockLog: '/erp-api/stock/log',
+  stockAdjust: '/erp-api/stock/adjust',
+  stockInboundList: '/erp-api/stock/inbound/list',
+  stockInboundGet: (id: number) => `/erp-api/stock/inbound/${id}`,
 }

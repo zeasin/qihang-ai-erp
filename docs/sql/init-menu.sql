@@ -130,8 +130,6 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- ====================================================================
 (50, '发货管理',       0, 45, '/ship',              'delivery/DeliveryLayout',   'delivery:manage',          '🚚', 'M'),
 (51,   '待发货订单',  50, 10, '/ship/pending',     'delivery/PendingOrderList', 'delivery:pending:list',    '📋', 'C'),
-(52,   '出库单列表',  50, 20, '/ship/outbound',    'delivery/StockOutList',     'delivery:out:list',        '📤', 'C'),
-(53,   '入库单列表',  50, 30, '/ship/inbound',     'delivery/StockInList',      'delivery:in:list',         '📥', 'C'),
 -- ====================================================================
 -- 一级：采购管理 (menu_id=60, M=目录)
 -- ====================================================================
@@ -143,7 +141,16 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (64,   '新增采购',    61, 1,  null,                 null,                       'purchase:order:add',       '➕', 'F'),
 (65,   '编辑采购',    61, 2,  null,                 null,                       'purchase:order:edit',     '✏️', 'F'),
 (66,   '删除采购',    61, 3,  null,                 null,                       'purchase:order:delete',   '🗑️', 'F'),
-(67,   '采购入库',    61, 4,  null,                 null,                       'purchase:order:stockin',  '📥', 'F');
+(67,   '采购入库',    61, 4,  null,                 null,                       'purchase:order:stockin',  '📥', 'F'),
+-- ====================================================================
+-- 一级：库存管理 (menu_id=80, M=目录)
+-- ====================================================================
+(80, '库存管理',       0, 43, '/inventory',         'inventory/InventoryLayout','inventory:manage',         '📦', 'M'),
+(81,   '库存总览',    80, 10, '/inventory/stock',   'inventory/StockList',      'inventory:stock:list',     '📊', 'C'),
+(82,   '出库单列表',  80, 20, '/inventory/outbound','inventory/StockOutList',   'inventory:out:list',       '📤', 'C'),
+(83,   '入库单列表',  80, 30, '/inventory/inbound', 'inventory/StockInList',    'inventory:in:list',        '📥', 'C'),
+-- 按钮权限
+(84,   '库存调整',    81, 1,  null,                 null,                       'inventory:stock:adjust',   '✏️', 'F');
 
 -- 隐藏页面设为不可见
 UPDATE sys_menu SET visible = '1' WHERE menu_id IN (32, 42, 62);
@@ -172,7 +179,7 @@ INSERT INTO sys_role_menu (role_id, menu_id) VALUES
 
 -- 发货员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES
-(5,1), (5,8), (5,12), (5,50), (5,51), (5,52), (5,53);
+(5,1), (5,8), (5,12), (5,50), (5,51), (5,80), (5,81), (5,82), (5,83), (5,84);
 
 -- 收货员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES

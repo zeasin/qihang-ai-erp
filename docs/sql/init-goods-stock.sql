@@ -147,3 +147,24 @@ CREATE TABLE erp_stock_out_item (
     shop_id BIGINT NOT NULL DEFAULT 0,
     merchant_id BIGINT NOT NULL DEFAULT 0
 );
+
+-- 库存变动日志
+DROP TABLE IF EXISTS o_goods_stock_log;
+CREATE TABLE o_goods_stock_log (
+    id BIGSERIAL PRIMARY KEY,
+    sku_id BIGINT NOT NULL DEFAULT 0,
+    goods_id BIGINT DEFAULT 0,
+    sku_code VARCHAR(100) DEFAULT '',
+    goods_name VARCHAR(500) DEFAULT '',
+    sku_name VARCHAR(200) DEFAULT '',
+    before_quantity INT DEFAULT 0,
+    change_quantity INT DEFAULT 0,
+    after_quantity INT DEFAULT 0,
+    type INT DEFAULT 0,
+    remark VARCHAR(500) DEFAULT '',
+    source_no VARCHAR(55) DEFAULT '',
+    warehouse_id BIGINT DEFAULT 0,
+    warehouse_name VARCHAR(100) DEFAULT '',
+    create_by VARCHAR(55) DEFAULT '',
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

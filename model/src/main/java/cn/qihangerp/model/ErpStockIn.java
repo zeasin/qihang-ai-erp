@@ -1,6 +1,7 @@
 package cn.qihangerp.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
@@ -29,7 +30,7 @@ public class ErpStockIn {
     private Date updateTime;
     private Long warehouseId;
     private String warehouseName;
-
+    @TableField(exist = false)
     private List<ErpStockInItem> itemList;
 
     public Long getId() { return id; } public void setId(Long v) { this.id = v; }
