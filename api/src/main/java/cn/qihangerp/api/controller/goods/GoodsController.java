@@ -18,9 +18,10 @@ import java.util.Map;
 public class GoodsController {
     @Autowired private OGoodsService service;
 
-    private boolean notAdmin() {
+    private boolean hasPerm(String perm) {
         var u = SecurityUtils.getLoginUser();
-        return u == null || u.getRoles().stream().noneMatch(r -> "admin".equals(r.getRoleKey()));
+        if (u == null) return false;
+        return u.getPermissions().contains(perm) || u.getPermissions().contains("*:*:*");
     }
 
     @GetMapping("/list")
@@ -35,14 +36,14 @@ public class GoodsController {
 
     @PostMapping("/save")
     public AjaxResult save(@RequestBody OGoods goods) {
-        if (notAdmin()) return AjaxResult.error(403, "权限不足");
+        if (!hasPerm("goods:goods:edit")) return AjaxResult.error(403, "权限不足");
         service.save(goods);
         return AjaxResult.success();
     }
 
     @PostMapping("/add")
     public AjaxResult add(@RequestBody Map<String, Object> body) {
-        if (notAdmin()) return AjaxResult.error(403, "权限不足");
+        if (!hasPerm("goods:goods:add")) return AjaxResult.error(403, "权限不足");
         OGoods goods = new OGoods();
         goods.setName((String) body.get("name"));
         goods.setImage((String) body.get("image"));
@@ -81,7 +82,7 @@ public class GoodsController {
 
     @DeleteMapping("/{id}")
     public AjaxResult delete(@PathVariable Long id) {
-        if (notAdmin()) return AjaxResult.error(403, "权限不足");
+        if (!hasPerm("goods:goods:remove")) return AjaxResult.error(403, "权限不足");
         service.delete(id);
         return AjaxResult.success();
     }
