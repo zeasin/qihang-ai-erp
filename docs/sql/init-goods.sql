@@ -15,7 +15,6 @@ CREATE TABLE o_goods_brand (
     update_time TIMESTAMP
 );
 
--- 初始数据
 INSERT INTO o_goods_brand (id, name, num, status, create_by) VALUES
 (1, '飞利浦', 'PHILIPS', 1, 'admin'),
 (2, '欧普', 'OPPLE', 1, 'admin'),
@@ -96,6 +95,61 @@ INSERT INTO o_goods_category_attribute_value (id, category_attribute_id, value, 
 (6, 2, '默认', '00', 0, 0);
 
 SELECT setval('o_goods_category_attribute_value_id_seq', (SELECT MAX(id) FROM o_goods_category_attribute_value));
+
+-- ====================================================================
+-- 商品库主表 (SPU)
+-- ====================================================================
+DROP TABLE IF EXISTS o_goods_sku;
+DROP TABLE IF EXISTS o_goods;
+
+CREATE TABLE o_goods (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL DEFAULT '',
+    image VARCHAR(500),
+    goods_num VARCHAR(50),
+    unit_name VARCHAR(10) DEFAULT '',
+    category_id BIGINT DEFAULT 0,
+    brand_id BIGINT DEFAULT 0,
+    bar_code VARCHAR(60) DEFAULT '',
+    remark VARCHAR(500) DEFAULT '',
+    status INT DEFAULT 1,
+    retail_price DECIMAL(10,2) DEFAULT 0,
+    weight DECIMAL(10,2) DEFAULT 0,
+    merchant_id BIGINT DEFAULT 0,
+    create_by VARCHAR(25),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_by VARCHAR(25),
+    update_time TIMESTAMP
+);
+
+-- ====================================================================
+-- 商品SKU表
+-- ====================================================================
+CREATE TABLE o_goods_sku (
+    id BIGSERIAL PRIMARY KEY,
+    goods_id BIGINT NOT NULL,
+    goods_name VARCHAR(200),
+    goods_num VARCHAR(50),
+    sku_name VARCHAR(100) DEFAULT '',
+    sku_code VARCHAR(100) NOT NULL,
+    color_id BIGINT DEFAULT 0,
+    color_value VARCHAR(50),
+    size_id BIGINT DEFAULT 0,
+    size_value VARCHAR(50),
+    style_id BIGINT DEFAULT 0,
+    style_value VARCHAR(50),
+    bar_code VARCHAR(60),
+    retail_price DECIMAL(10,2) DEFAULT 0,
+    unit_cost DECIMAL(10,2) DEFAULT 0,
+    remark VARCHAR(500) DEFAULT '',
+    status INT DEFAULT 1,
+    weight DECIMAL(10,2) DEFAULT 0,
+    merchant_id BIGINT DEFAULT 0,
+    create_by VARCHAR(25),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_by VARCHAR(25),
+    update_time TIMESTAMP
+);
 
 -- ====================================================================
 -- 供应商档案

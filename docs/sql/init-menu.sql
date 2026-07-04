@@ -95,7 +95,17 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (112, '快递公司库',    26, 41, '/basic/logistics-company','basic/LogisticsCompany','basic:logisticsCompany:manage', '📮', 'C'),
 (114, '字典管理',      26, 50, '/basic/dict',        'basic/Dict',          'basic:dict:manage',       '📖', 'C'),
 
-(116,   '菜单管理',    13, 3,  '/system/menus',     'system/Menus',        'system:menu:manage',      '📋', 'C');
+(116,   '菜单管理',    13, 3,  '/system/menus',     'system/Menus',        'system:menu:manage',      '📋', 'C'),
+
+-- ====================================================================
+-- 一级：商品管理 (menu_id=30, M=目录)
+-- ====================================================================
+(30, '商品管理',       0, 30, '/goods',            'goods/GoodsLayout',   'goods:manage',            '📦', 'M'),
+(31,   '商品库管理',   30, 10, '/goods/list',      'goods/GoodsList',     'goods:goods:list',        '📋', 'C'),
+-- 按钮权限
+(34,   '新增商品',    31, 1,  null,                null,                  'goods:goods:add',         '➕', 'F'),
+(35,   '编辑商品',    31, 2,  null,                null,                  'goods:goods:edit',        '✏️', 'F'),
+(36,   '删除商品',    31, 3,  null,                null,                  'goods:goods:remove',      '🗑️', 'F');
 
 -- ====================================================================
 -- 角色-菜单分配
