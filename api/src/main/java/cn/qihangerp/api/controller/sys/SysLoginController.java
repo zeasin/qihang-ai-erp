@@ -108,8 +108,4 @@ public class SysLoginController {
         }
     }
 
-    @GetMapping("/api/ai/ping")
-    public AjaxResult ping() {
-        return AjaxResult.success("启航AI ERP服务运行中");
-    }
 }

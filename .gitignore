@@ -26,6 +26,7 @@ web/dist/
 # Env
 .env
 .env.local
+application-dev.yml
 
 # Logs
 *.log

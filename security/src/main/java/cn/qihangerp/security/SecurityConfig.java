@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/sys-api/login").permitAll()
                 .requestMatchers("/api/sys-api/captchaImage").permitAll()
                 .requestMatchers("/api/ai/ping").permitAll()
+                .requestMatchers("/api/ai/chat", "/api/ai/chat/sync").permitAll()
                 .requestMatchers("/api-docs", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
