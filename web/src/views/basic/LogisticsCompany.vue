@@ -12,11 +12,11 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="small" @click="fetch">搜索</el-button>
-        <el-button size="small" @click="query={name:'',status:null};fetch()">重置</el-button>
+        <el-button type="primary" size="small" @click="pageNum=1;fetch()">搜索</el-button>
+        <el-button size="small" @click="query={name:'',status:null};pageNum=1;fetch()">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="list" stripe border size="small">
+    <el-table :data="list" stripe border size="small" v-loading="loading">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="name" label="快递公司" min-width="160" />
       <el-table-column prop="code" label="编码" width="120" />
@@ -32,6 +32,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination v-if="total > 0" v-model:current-page="pageNum" v-model:page-size="pageSize" :total="total" :page-sizes="[10,20,50,100]" layout="total, sizes, prev, pager, next" background small style="margin-top:12px" @current-change="fetch" @size-change="fetch" />
 
     <el-dialog v-model="dlg.visible" :title="dlg.isNew?'新增快递公司':'修改快递公司'" width="500px">
       <el-form :model="dlg.form" label-width="100px" size="small">
@@ -59,13 +60,17 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
 import { api } from '../../utils/api'
 
-const list = ref<any[]>([]); const saving = ref(false)
+const list = ref<any[]>([]); const saving = ref(false); const loading = ref(false)
+const pageNum = ref(1); const pageSize = ref(20); const total = ref(0)
 const query = reactive({ name:'', status:null as number|null })
 const dlg = reactive({ visible:false, isNew:true, form:{id:null as number|null, name:'', code:'', logisticsId:'', status:1, remark:''} })
 
 async function fetch() {
-  const r:any = await request.get(api.logisticsCompanyList, { params:query })
-  list.value = r.data || []
+  loading.value = true
+  const r:any = await request.get(api.logisticsCompanyList, { params:{ ...query, pageNum:pageNum.value, pageSize:pageSize.value } })
+  list.value = r.rows || []
+  total.value = r.total || 0
+  loading.value = false
 }
 function showDialog(row:any) { dlg.isNew=true; dlg.form={id:null, name:'', code:'', logisticsId:'', status:1, remark:''}; dlg.visible=true }
 function editRow(row:any) { dlg.isNew=false; dlg.form={...row}; dlg.visible=true }

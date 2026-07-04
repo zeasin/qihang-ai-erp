@@ -68,7 +68,7 @@
                 <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-        </dependencies>
+                    </dependencies>
     </dependencyManagement>
 
     <dependencies>

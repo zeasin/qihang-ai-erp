@@ -11,4 +11,11 @@
     <artifactId>common</artifactId>
     <packaging>jar</packaging>
     <name>common</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+        </dependency>
+    </dependencies>
 </project>

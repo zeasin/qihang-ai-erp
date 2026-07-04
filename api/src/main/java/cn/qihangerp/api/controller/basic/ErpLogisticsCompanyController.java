@@ -6,6 +6,8 @@ import cn.qihangerp.security.common.SecurityUtils;
 import cn.qihangerp.service.ErpLogisticsCompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import cn.qihangerp.common.PageQuery;
+import cn.qihangerp.common.PageResult;
 
 @RestController
 @RequestMapping("/api/sys-api/basic/logistics-company")
@@ -18,7 +20,9 @@ public class ErpLogisticsCompanyController {
     }
 
     @GetMapping("/list")
-    public AjaxResult list() { return AjaxResult.success(service.list()); }
+    public PageResult<ErpLogisticsCompany> list(PageQuery pageQuery, String name, Integer status) {
+        return service.list(name, status, pageQuery);
+    }
 
     @PostMapping("/save")
     public AjaxResult save(@RequestBody ErpLogisticsCompany l) {
