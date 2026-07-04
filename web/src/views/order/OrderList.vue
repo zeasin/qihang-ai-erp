@@ -5,7 +5,7 @@
       <el-button type="primary" size="small" @click="$router.push('/order/create')">新增订单</el-button>
     </div>
 
-    <el-form :model="query" inline size="small" style="margin-bottom:12px">
+    <el-form :model="query" inline style="margin-bottom:12px">
       <el-form-item label="订单号">
         <el-input v-model="query.orderNum" placeholder="搜索" clearable style="width:160px" @keyup.enter="search" />
       </el-form-item>
@@ -22,9 +22,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="时间">
-        <el-date-picker v-model="query.startTime" type="datetime" placeholder="开始" value-format="YYYY-MM-DD HH:mm:ss" style="width:160px" />
-        <span style="margin:0 6px">~</span>
-        <el-date-picker v-model="query.endTime" type="datetime" placeholder="结束" value-format="YYYY-MM-DD HH:mm:ss" style="width:160px" />
+        <el-date-picker v-model="timeRange" type="datetimerange" range-separator="~" start-placeholder="开始" end-placeholder="结束"
+          value-format="YYYY-MM-DD HH:mm:ss" style="width:340px" @change="timeRangeChange" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -35,6 +34,26 @@
     <el-table :data="list" stripe border size="small" v-loading="loading">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="orderNum" label="订单号" width="160" />
+      <el-table-column label="商品" width="380">
+        <template #default="{ row }">
+          <div v-if="row.itemList && row.itemList.length" style="display:flex;flex-direction:column;gap:2px">
+            <div v-for="(item, idx) in row.itemList.slice(0,2)" :key="idx" style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:13px">
+              <el-image :src="item.goodsImg || '/logo.png'" style="width:36px;height:36px;border-radius:4px;flex-shrink:0" fit="cover">
+                <template #error>
+                  <div style="width:36px;height:36px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;color:#ccc">图</div>
+                </template>
+              </el-image>
+              <div style="flex:1;min-width:0;line-height:1.4">
+                <div class="text-ellipsis" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ item.goodsTitle }}</div>
+                <div v-if="item.goodsSpec" style="color:#999;font-size:12px">{{ item.goodsSpec }}</div>
+              </div>
+              <span style="color:#666;white-space:nowrap">x{{ item.quantity }}</span>
+            </div>
+            <span v-if="row.itemList.length > 2" style="color:#409eff;font-size:12px;cursor:pointer" @click="showDetail(row)">...共 {{ row.itemList.length }} 件商品，点击查看</span>
+          </div>
+          <span v-else style="color:#999">-</span>
+        </template>
+      </el-table-column>
       <el-table-column label="商品金额" width="100" align="right">
         <template #default="{ row }">{{ row.goodsAmount }}</template>
       </el-table-column>
@@ -112,10 +131,17 @@ const query = reactive({ orderNum: '', receiverName: '', orderStatus: undefined 
 
 const detailVisible = ref(false)
 const detail = ref<any>(null)
+const timeRange = ref<any>(null)
+
+function timeRangeChange(val: string[] | null) {
+  query.startTime = val ? val[0] : ''
+  query.endTime = val ? val[1] : ''
+}
 
 function search() { pageNum.value = 1; fetchData() }
 function resetQuery() {
   Object.assign(query, { orderNum: '', receiverName: '', orderStatus: undefined, startTime: '', endTime: '' })
+  timeRange.value = null
   search()
 }
 

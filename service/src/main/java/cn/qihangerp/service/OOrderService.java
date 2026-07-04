@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OOrderService {
@@ -30,6 +32,15 @@ public class OOrderService {
             .apply(StringUtils.hasText(endTime), "order_time <= TO_TIMESTAMP({0}, 'YYYY-MM-DD HH24:MI:SS')", endTime)
             .orderByDesc(OOrder::getId);
         IPage<OOrder> page = mapper.selectPage(pageQuery.build(), qw);
+        List<OOrder> records = page.getRecords();
+        if (!records.isEmpty()) {
+            List<Long> ids = records.stream().map(OOrder::getId).toList();
+            List<OOrderItem> allItems = itemMapper.selectList(
+                new LambdaQueryWrapper<OOrderItem>().in(OOrderItem::getOrderId, ids));
+            Map<Long, List<OOrderItem>> grouped = allItems.stream()
+                .collect(Collectors.groupingBy(OOrderItem::getOrderId));
+            records.forEach(o -> o.setItemList(grouped.get(o.getId())));
+        }
         return PageResult.build(page);
     }
 
