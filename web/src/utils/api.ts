@@ -104,4 +104,13 @@ export const api = {
   deliveryCreate: '/erp-api/delivery/deliver',
   deliveryConfirm: (id: number) => `/erp-api/delivery/${id}/confirm`,
   deliveryStockCheck: '/erp-api/delivery/stockCheck',
+
+  // 采购管理
+  purchaseList: '/erp-api/purchase/list',
+  purchaseGet: (id: number) => `/erp-api/purchase/${id}`,
+  purchaseSave: '/erp-api/purchase/save',
+  purchaseDelete: (id: number) => `/erp-api/purchase/${id}`,
+  purchaseStockIn: (id: number) => `/erp-api/purchase/${id}/stockIn`,
+  purchaseStockInList: '/erp-api/purchase/stock-in/list',
+  purchaseStockInGet: (id: number) => `/erp-api/purchase/stock-in/${id}`,
 }

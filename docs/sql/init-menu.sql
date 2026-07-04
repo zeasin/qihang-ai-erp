@@ -125,10 +125,22 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 (50, '发货管理',       0, 45, '/ship',              'delivery/DeliveryLayout',   'delivery:manage',          '🚚', 'M'),
 (51,   '待发货订单',  50, 10, '/ship/pending',     'delivery/PendingOrderList', 'delivery:pending:list',    '📋', 'C'),
 (52,   '出库单列表',  50, 20, '/ship/outbound',    'delivery/StockOutList',     'delivery:out:list',        '📤', 'C'),
-(53,   '入库单列表',  50, 30, '/ship/inbound',     'delivery/StockInList',      'delivery:in:list',         '📥', 'C');
+(53,   '入库单列表',  50, 30, '/ship/inbound',     'delivery/StockInList',      'delivery:in:list',         '📥', 'C'),
+-- ====================================================================
+-- 一级：采购管理 (menu_id=60, M=目录)
+-- ====================================================================
+(60, '采购管理',       0, 35, '/purchase',         'purchase/PurchaseLayout',   'purchase:manage',          '📦', 'M'),
+(61,   '采购订单',    60, 10, '/purchase/list',    'purchase/PurchaseList',     'purchase:order:list',      '📋', 'C'),
+(62,   '新增采购订单', 60, 11, '/purchase/create', 'purchase/PurchaseCreate',   null,                       '➕', 'C'),
+(63,   '采购入库',    60, 20, '/purchase/stock-in', 'purchase/StockInList',     'purchase:stockin:list',    '📥', 'C'),
+-- 按钮权限
+(64,   '新增采购',    61, 1,  null,                 null,                       'purchase:order:add',       '➕', 'F'),
+(65,   '编辑采购',    61, 2,  null,                 null,                       'purchase:order:edit',     '✏️', 'F'),
+(66,   '删除采购',    61, 3,  null,                 null,                       'purchase:order:delete',   '🗑️', 'F'),
+(67,   '采购入库',    61, 4,  null,                 null,                       'purchase:order:stockin',  '📥', 'F');
 
 -- 隐藏页面设为不可见
-UPDATE sys_menu SET visible = '1' WHERE menu_id IN (32, 42);
+UPDATE sys_menu SET visible = '1' WHERE menu_id IN (32, 42, 62);
 
 -- ====================================================================
 -- 角色-菜单分配
