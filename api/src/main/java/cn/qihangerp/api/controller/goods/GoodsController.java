@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/sys-api/goods")
+@RequestMapping("/erp-api/goods")
 public class GoodsController {
     @Autowired private OGoodsService service;
 

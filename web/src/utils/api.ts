@@ -82,4 +82,10 @@ export const api = {
   logisticsCompanyList: '/sys-api/basic/logistics-company/list',
   logisticsCompanySave: '/sys-api/basic/logistics-company/save',
   logisticsCompanyDelete: (id: number) => `/sys-api/basic/logistics-company/${id}`,
+
+  // 商品库管理
+  goodsList: '/erp-api/goods/list',
+  goodsGet: (id: number) => `/erp-api/goods/${id}`,
+  goodsSave: '/erp-api/goods/save',
+  goodsDelete: (id: number) => `/erp-api/goods/${id}`,
 }

@@ -108,6 +108,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
 import { api } from '../../utils/api'
 
@@ -134,7 +135,7 @@ function resetQuery() {
 async function fetchData() {
   loading.value = true
   try {
-    const res: any = await request.get('/api/sys-api/goods/list', {
+    const res: any = await request.get(api.goodsList, {
       params: { pageNum: pageNum.value, pageSize: pageSize.value, ...query }
     })
     list.value = res.rows || []
@@ -145,8 +146,8 @@ async function fetchData() {
 async function loadOptions() {
   try {
     const [catRes, brandRes] = await Promise.all([
-      request.get('/api/sys-api/basic/category/list'),
-      request.get('/api/sys-api/basic/brand/list'),
+      request.get(api.categoryList),
+      request.get(api.brandList),
     ])
     categories.value = catRes.data || []
     brands.value = brandRes.data || []
@@ -165,7 +166,7 @@ function showDialog(row: any) {
 async function submitForm() {
   submitting.value = true
   try {
-    const res: any = await request.post('/api/sys-api/goods/save', form)
+    const res: any = await request.post(api.goodsSave, form)
     if (res.code === 200) {
       ElMessage.success('保存成功')
       dialogVisible.value = false
@@ -179,7 +180,7 @@ async function submitForm() {
 async function deleteRow(row: any) {
   try {
     await ElMessageBox.confirm('确认删除该商品？', '提示', { type: 'warning' })
-    const res: any = await request.delete(`/api/sys-api/goods/${row.id}`)
+    const res: any = await request.delete(api.goodsDelete(row.id))
     if (res.code === 200) {
       ElMessage.success('删除成功')
       fetchData()
