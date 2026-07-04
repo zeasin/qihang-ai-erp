@@ -28,7 +28,12 @@ CREATE TABLE o_order (
     create_by VARCHAR(25),
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_by VARCHAR(25),
-    update_time TIMESTAMP
+    update_time TIMESTAMP,
+    logistics_company VARCHAR(100) DEFAULT '',
+    logistics_no VARCHAR(100) DEFAULT '',
+    warehouse_id BIGINT DEFAULT 0,
+    warehouse_name VARCHAR(100) DEFAULT '',
+    ship_time TIMESTAMP
 );
 
 -- ====================================================================

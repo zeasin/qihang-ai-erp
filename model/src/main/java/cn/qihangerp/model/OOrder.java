@@ -35,6 +35,11 @@ public class OOrder {
     private Date createTime;
     private String updateBy;
     private Date updateTime;
+    private String logisticsCompany;
+    private String logisticsNo;
+    private Long warehouseId;
+    private String warehouseName;
+    private Date shipTime;
 
     @TableField(exist = false)
     private List<OOrderItem> itemList;
@@ -83,6 +88,16 @@ public class OOrder {
     public void setUpdateBy(String v) { this.updateBy = v; }
     public Date getUpdateTime() { return updateTime; }
     public void setUpdateTime(Date v) { this.updateTime = v; }
+    public String getLogisticsCompany() { return logisticsCompany; }
+    public void setLogisticsCompany(String v) { this.logisticsCompany = v; }
+    public String getLogisticsNo() { return logisticsNo; }
+    public void setLogisticsNo(String v) { this.logisticsNo = v; }
+    public Long getWarehouseId() { return warehouseId; }
+    public void setWarehouseId(Long v) { this.warehouseId = v; }
+    public String getWarehouseName() { return warehouseName; }
+    public void setWarehouseName(String v) { this.warehouseName = v; }
+    public Date getShipTime() { return shipTime; }
+    public void setShipTime(Date v) { this.shipTime = v; }
     public List<OOrderItem> getItemList() { return itemList; }
     public void setItemList(List<OOrderItem> v) { this.itemList = v; }
 }

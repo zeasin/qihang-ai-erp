@@ -118,7 +118,14 @@ INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 -- 按钮权限
 (44,   '新增订单',    41, 1,  null,                null,                  'order:order:add',         '➕', 'F'),
 (45,   '编辑订单',    41, 2,  null,                null,                  'order:order:edit',        '✏️', 'F'),
-(46,   '删除订单',    41, 3,  null,                null,                  'order:order:remove',      '🗑️', 'F');
+(46,   '删除订单',    41, 3,  null,                null,                  'order:order:remove',      '🗑️', 'F'),
+-- ====================================================================
+-- 一级：发货管理 (menu_id=50, M=目录) 供发货/仓储人员使用
+-- ====================================================================
+(50, '发货管理',       0, 45, '/ship',              'delivery/DeliveryLayout',   'delivery:manage',          '🚚', 'M'),
+(51,   '待发货订单',  50, 10, '/ship/pending',     'delivery/PendingOrderList', 'delivery:pending:list',    '📋', 'C'),
+(52,   '出库单列表',  50, 20, '/ship/outbound',    'delivery/StockOutList',     'delivery:out:list',        '📤', 'C'),
+(53,   '入库单列表',  50, 30, '/ship/inbound',     'delivery/StockInList',      'delivery:in:list',         '📥', 'C');
 
 -- 隐藏页面设为不可见
 UPDATE sys_menu SET visible = '1' WHERE menu_id IN (32, 42);
@@ -136,6 +143,8 @@ INSERT INTO sys_role_menu (role_id, menu_id) VALUES
 (2,1), (2,2), (2,3), (2,4), (2,5), (2,12), (2,40), (2,41), (2,42), (2,44), (2,45), (2,46);
 
 -- 拣货员
+
+-- 拣货员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES
 (3,1), (3,6), (3,12);
 
@@ -145,7 +154,7 @@ INSERT INTO sys_role_menu (role_id, menu_id) VALUES
 
 -- 发货员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES
-(5,1), (5,8), (5,12);
+(5,1), (5,8), (5,12), (5,50), (5,51), (5,52), (5,53);
 
 -- 收货员
 INSERT INTO sys_role_menu (role_id, menu_id) VALUES

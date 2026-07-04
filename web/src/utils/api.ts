@@ -96,4 +96,11 @@ export const api = {
   orderGet: (id: number) => `/erp-api/order/${id}`,
   orderSave: '/erp-api/order/save',
   orderDelete: (id: number) => `/erp-api/order/${id}`,
+
+  // 发货管理
+  deliveryList: '/erp-api/delivery/list',
+  deliveryGet: (id: number) => `/erp-api/delivery/${id}`,
+  deliveryCreate: '/erp-api/delivery/deliver',
+  deliveryConfirm: (id: number) => `/erp-api/delivery/${id}/confirm`,
+  deliveryStockCheck: '/erp-api/delivery/stockCheck',
 }
