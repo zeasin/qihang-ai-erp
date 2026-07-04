@@ -43,7 +43,7 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     @Insert("INSERT INTO sys_user_role (user_id, role_id) VALUES (#{userId}, #{roleId})")
     int insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
-    @Select("SELECT * FROM sys_menu WHERE status = '0' AND menu_type IN ('M', 'C')")
+    @Select("SELECT * FROM sys_menu WHERE status = '0' AND menu_type IN ('M', 'C', 'F')")
     List<SysMenu> selectAllVisibleMenus();
 
     @Delete("DELETE FROM sys_role_menu WHERE menu_id = #{menuId}")
