@@ -21,7 +21,7 @@ public class OrderController {
 
     @GetMapping("/list")
     public PageResult<OOrder> list(PageQuery pageQuery, String orderNum, String receiverName,
-                                   Integer orderStatus, String startTime, String endTime) {
+                                    Integer orderStatus, String startTime, String endTime) {
         return service.list(orderNum, receiverName, orderStatus, startTime, endTime, pageQuery);
     }
 
@@ -30,6 +30,16 @@ public class OrderController {
         OOrder order = service.getById(id);
         if (order == null) return AjaxResult.error(404, "订单不存在");
         return AjaxResult.success(order);
+    }
+
+    @PostMapping("/{id}/pay")
+    public AjaxResult pay(@PathVariable Long id) {
+        try {
+            service.pay(id);
+            return AjaxResult.success();
+        } catch (RuntimeException e) {
+            return AjaxResult.error(e.getMessage());
+        }
     }
 
     @PostMapping("/save")

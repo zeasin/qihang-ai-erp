@@ -73,6 +73,7 @@
       <el-table-column label="操作" width="200" align="center" fixed="right">
         <template #default="{ row }">
           <el-button size="small" type="primary" link @click="showDetail(row)">详情</el-button>
+          <el-button v-if="row.orderStatus === 0" size="small" type="success" link @click="confirmPay(row)">付款确认</el-button>
           <el-button v-if="row.orderStatus === 1" size="small" type="success" link @click="openDelivery(row)">发货</el-button>
           <el-button size="small" type="danger" link @click="deleteRow(row)">删除</el-button>
         </template>
@@ -307,6 +308,15 @@ async function showDetail(row: any) {
   const res: any = await request.get(api.orderGet(row.id))
   detail.value = res.data
   detailVisible.value = true
+}
+
+async function confirmPay(row: any) {
+  try {
+    await ElMessageBox.confirm('确认该订单已付款？', '提示', { type: 'info' })
+    const res: any = await request.post(api.orderPay(row.id))
+    if (res.code === 200) { ElMessage.success('付款确认成功'); fetchData() }
+    else ElMessage.error(res.msg || '操作失败')
+  } catch { /* cancelled */ }
 }
 
 async function deleteRow(row: any) {

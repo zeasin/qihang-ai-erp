@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,6 +70,15 @@ public class OOrderService {
                 itemMapper.insert(item);
             }
         }
+    }
+
+    public void pay(Long id) {
+        OOrder order = mapper.selectById(id);
+        if (order == null) throw new RuntimeException("订单不存在");
+        if (order.getOrderStatus() != 0) throw new RuntimeException("当前状态不能付款");
+        order.setOrderStatus(1);
+        order.setUpdateTime(new Date());
+        mapper.updateById(order);
     }
 
     public void delete(Long id) {

@@ -47,14 +47,14 @@
         <el-table-column label="SKU编码" width="120">
           <template #default="{ row }">{{ row.skuNum || '-' }}</template>
         </el-table-column>
-        <el-table-column label="单价" width="90">
+        <el-table-column label="单价" width="140">
           <template #default="{ row }">
-            <el-input-number v-model="row.goodsPrice" :precision="2" :min="0" size="small" style="width:80px" />
+            <el-input-number v-model="row.goodsPrice" :precision="2" :min="0" size="small" style="width:120px" />
           </template>
         </el-table-column>
-        <el-table-column label="数量" width="70">
+        <el-table-column label="数量" width="100">
           <template #default="{ row }">
-            <el-input-number v-model="row.quantity" :min="1" size="small" style="width:60px" />
+            <el-input-number v-model="row.quantity" :min="1" size="small" style="width:80px" />
           </template>
         </el-table-column>
         <el-table-column label="小计" width="80" align="right">
@@ -154,7 +154,10 @@ const form = reactive<any>({
 const rules: any = {
   orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
   receiverName: [{ required: true, message: '收件人不能为空', trigger: 'blur' }],
-  receiverMobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
+  receiverMobile: [
+    { required: true, message: '手机号不能为空', trigger: 'blur' },
+    { pattern: /^1\d{10}$/, message: '手机号格式不正确', trigger: 'blur' },
+  ],
   region: [{ validator: (_rule: any, _value: any, callback: Function) => {
     regionVal.value.length > 0 ? callback() : callback(new Error('请选择省市区'))
   }, trigger: 'change' }],
